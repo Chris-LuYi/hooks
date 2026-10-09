@@ -229,6 +229,8 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
 
       const call: PendingCall = {
         start: (keyChain) => {
+          // A subscriber notified during the batch flush may already have settled this call.
+          if (settled) return;
           phase = 'running';
           // Snapshot: global handlers (outermost) + key handlers, as they are right now.
           const chain = [...globals, ...keyChain];

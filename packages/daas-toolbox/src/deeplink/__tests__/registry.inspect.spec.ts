@@ -126,6 +126,22 @@ describe('subscribe', () => {
     await expect(reg.invoke('k')).resolves.toBe('ok');
   });
 
+  test('a waiting call aborted by a subscriber during the flush never runs its handler', async () => {
+    const reg = createDeeplinkRegistry();
+    const controller = new AbortController();
+    const p = reg.invoke('k', undefined, { signal: controller.signal });
+    const assertion = expect(p).rejects.toThrow('stop');
+    reg.subscribe(() => {
+      const status = reg.inspect().keys.find((s) => s.key === 'k');
+      if (status?.waiting === 0) controller.abort(new Error('stop'));
+    });
+    const handler = vi.fn(() => 'ran');
+    reg.registerHandler('k', handler, own);
+    await assertion;
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    expect(handler).not.toHaveBeenCalled();
+  });
+
   test('unsubscribe stops notifications and is idempotent', () => {
     const reg = createDeeplinkRegistry();
     const listener = vi.fn();
