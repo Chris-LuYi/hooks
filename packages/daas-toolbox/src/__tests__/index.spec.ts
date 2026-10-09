@@ -9,10 +9,22 @@ describe('@daas/toolbox barrel', () => {
     'useHistoryTravel',
     'useMount',
     'useWhyDidYouUpdate',
+    'useDeeplinkHandler',
     'clearCache',
     'isCancelledError',
     'CancelledError',
+    'createDeeplinkRegistry',
+    'DeeplinkTimeoutError',
+    'isDeeplinkTimeoutError',
   ])('exports %s', (name) => {
     expect(typeof exported[name]).toBe('function');
+  });
+
+  test('exports the shared deeplink registry', () => {
+    expect(exported.deeplink).toEqual({
+      handle: expect.any(Function),
+      invoke: expect.any(Function),
+      has: expect.any(Function),
+    });
   });
 });
