@@ -1,7 +1,7 @@
 # daas-toolbox + deeplink handler registry — design
 
 - **Date:** 2026-10-09
-- **Status:** Draft, awaiting review
+- **Status:** Accepted; §4 rules 4, 5 and 10 and the "Replace" duplicate rule are superseded by `2026-10-10-deeplink-middleware-chain-design.md`
 - **Branch:** `daas-hooks`
 
 ## 1. Goal
