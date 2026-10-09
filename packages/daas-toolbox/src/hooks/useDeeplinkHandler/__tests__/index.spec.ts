@@ -72,9 +72,7 @@ describe('useDeeplinkHandler', () => {
 
   test('the same owner in two components leaves one handler (the later one)', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const first = renderHook(() =>
-      useDeeplinkHandler('hook.dup', () => 'first', { owner: 'dup' }),
-    );
+    const first = renderHook(() => useDeeplinkHandler('hook.dup', () => 'first', { owner: 'dup' }));
     const second = renderHook(() =>
       useDeeplinkHandler('hook.dup', () => 'second', { owner: 'dup' }),
     );

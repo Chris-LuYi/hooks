@@ -114,22 +114,21 @@ describe('timeout', () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  test.each([
-    Number.NaN,
-    -1,
-    '100',
-  ])('timeout %s rejects with TypeError instead of throwing synchronously (spec rule 2)', async (timeout) => {
-    const reg = createDeeplinkRegistry();
-    let p: Promise<unknown> = Promise.resolve();
-    expect(() => {
-      p = reg.invoke('k', undefined, { timeout: timeout as number });
-    }).not.toThrow();
-    await expect(p).rejects.toThrow(
-      new TypeError(
-        `[daas-toolbox] deeplink timeout must be a non-negative number or Infinity, got ${String(timeout)}`,
-      ),
-    );
-  });
+  test.each([Number.NaN, -1, '100'])(
+    'timeout %s rejects with TypeError instead of throwing synchronously (spec rule 2)',
+    async (timeout) => {
+      const reg = createDeeplinkRegistry();
+      let p: Promise<unknown> = Promise.resolve();
+      expect(() => {
+        p = reg.invoke('k', undefined, { timeout: timeout as number });
+      }).not.toThrow();
+      await expect(p).rejects.toThrow(
+        new TypeError(
+          `[daas-toolbox] deeplink timeout must be a non-negative number or Infinity, got ${String(timeout)}`,
+        ),
+      );
+    },
+  );
 
   test('null options behave like omitted options', async () => {
     const reg = createDeeplinkRegistry();

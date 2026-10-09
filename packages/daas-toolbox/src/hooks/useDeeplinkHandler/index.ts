@@ -75,7 +75,8 @@ function useDeeplinkHandler(...args: UntypedArgs | TypedArgs): void {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: handlerRef is a stable ref; re-registering on every handler change is exactly what this hook avoids
   useEffect(
-    () => registry.registerHandler(key, (ctx, next) => handlerRef.current(ctx, next), { owner, order }),
+    () =>
+      registry.registerHandler(key, (ctx, next) => handlerRef.current(ctx, next), { owner, order }),
     [registry, key, owner, order],
   );
 }
