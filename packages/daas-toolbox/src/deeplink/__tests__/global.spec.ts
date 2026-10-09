@@ -20,7 +20,7 @@ test('two module copies share one registry', async () => {
   vi.resetModules();
   const b = (await import('../index')).deeplink;
   expect(b).toBe(a);
-  const off = a.handle('global.shared', () => 'from-a');
+  const off = a.registerHandler('global.shared', () => 'from-a', { owner: 'a' });
   await expect(b.invoke('global.shared')).resolves.toBe('from-a');
   off();
 });

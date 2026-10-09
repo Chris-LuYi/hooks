@@ -23,7 +23,7 @@ describe('@daas/toolbox barrel', () => {
 
   test('exports the shared deeplink registry', () => {
     expect(exported.deeplink).toEqual({
-      handle: expect.any(Function),
+      registerHandler: expect.any(Function),
       invoke: expect.any(Function),
       has: expect.any(Function),
     });

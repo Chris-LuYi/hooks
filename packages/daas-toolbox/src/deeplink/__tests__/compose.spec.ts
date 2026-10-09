@@ -117,9 +117,9 @@ describe('compose', () => {
     const innermost = vi.fn(() => 'never');
     const outer: Handler = async (_ctx, next) => `outer(${String(await next())})`;
     const mock: Handler = () => 'mock';
-    await expect(
-      compose([step(outer), step(mock), step(innermost)], makeCtx()),
-    ).resolves.toBe('outer(mock)');
+    await expect(compose([step(outer), step(mock), step(innermost)], makeCtx())).resolves.toBe(
+      'outer(mock)',
+    );
     expect(innermost).not.toHaveBeenCalled();
   });
 

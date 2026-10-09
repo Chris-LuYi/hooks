@@ -12,11 +12,11 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-test('replacing a handler does not warn in production', () => {
+test('replacing an owner handler does not warn in production', () => {
   const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
   const reg = createDeeplinkRegistry();
-  reg.handle('k', () => 1);
-  reg.handle('k', () => 2);
+  reg.registerHandler('k', () => 1, { owner: 'a' });
+  reg.registerHandler('k', () => 2, { owner: 'a' });
   expect(warn).not.toHaveBeenCalled();
 });
 

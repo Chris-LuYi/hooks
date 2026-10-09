@@ -26,8 +26,9 @@ export function createAppDeeplinks<M extends DeeplinkContractMap<M> = UntypedDee
   let facade = facades.get(registry);
   if (!facade) {
     facade = {
-      // The contract types exist only at compile time; at runtime this is the plain registry API.
-      handle: (key, handler) => registry.handle(key, handler as DeeplinkHandler<unknown>),
+      // Contract types exist only at compile time; typed and untyped handlers are identical at runtime.
+      registerHandler: (key, handler, options) =>
+        registry.registerHandler(key, handler as unknown as DeeplinkHandler, options),
       invoke: (key, params, options) =>
         registry.invoke(key, params as Record<string, unknown> | undefined, options),
       has: (key) => registry.has(key),

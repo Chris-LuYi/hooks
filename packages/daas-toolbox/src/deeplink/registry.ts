@@ -1,10 +1,12 @@
 import isDev from '../utils/isDev';
+import { type ComposeStep, compose } from './compose';
 import { DeeplinkTimeoutError } from './errors';
 import type {
+  DeeplinkCallContext,
   DeeplinkHandler,
-  DeeplinkHandlerContext,
   DeeplinkInvokeOptions,
   DeeplinkPhase,
+  DeeplinkRegisterOptions,
   DeeplinkRegistry,
 } from './types';
 
@@ -15,16 +17,22 @@ const DEFAULT_TIMEOUT = 10000;
 const MAX_TIMER_DELAY = 2147483647;
 
 /**
- * One `handle()` call. Disposers compare this object rather than the handler function, so
- * registering the same function twice stays safe.
+ * One registered handler. `unregister` compares this object rather than the handler function,
+ * so registering the same function under several owners stays safe.
  */
-interface Registration {
-  handler: DeeplinkHandler<unknown>;
+interface Registration extends ComposeStep {
+  order: number;
+  /** Registration sequence; breaks ties between equal `order` values. */
+  seq: number;
 }
 
-/** An `invoke()` call; `start` hands it to a handler. */
+/** An `invoke()` call waiting for its first key handler; `start` runs it on a chain snapshot. */
 interface PendingCall {
-  start: (handler: DeeplinkHandler<unknown>) => void;
+  start: (keyChain: readonly ComposeStep[]) => void;
+}
+
+function byOrder(a: Registration, b: Registration): number {
+  return a.order - b.order || a.seq - b.seq;
 }
 
 function assertKey(key: unknown): asserts key is string {
@@ -45,13 +53,54 @@ function assertTimeout(timeout: unknown): asserts timeout is number {
   }
 }
 
+function assertHandler(handler: unknown): asserts handler is DeeplinkHandler {
+  if (typeof handler !== 'function') {
+    throw new TypeError('[daas-toolbox] deeplink handler must be a function');
+  }
+}
+
+/** Validate register options; `owner` is required (also when `options` itself is missing). */
+function readRegisterOptions(options: DeeplinkRegisterOptions | undefined): {
+  owner: string;
+  order: number;
+} {
+  const owner: unknown = options?.owner;
+  const order: unknown = options?.order ?? 0;
+  if (typeof owner !== 'string' || owner === '') {
+    throw new TypeError('[daas-toolbox] deeplink owner must be a non-empty string');
+  }
+  if (typeof order !== 'number' || !Number.isFinite(order)) {
+    throw new TypeError(
+      `[daas-toolbox] deeplink order must be a finite number, got ${String(order)}`,
+    );
+  }
+  return { owner, order };
+}
+
+/** `list` plus `registration`, minus any earlier registration from the same owner; sorted. */
+function insertRegistration(
+  list: readonly Registration[],
+  registration: Registration,
+  onReplace: () => void,
+): Registration[] {
+  const next = list.filter((existing) => {
+    if (existing.owner !== registration.owner) return true;
+    onReplace();
+    return false;
+  });
+  next.push(registration);
+  return next.sort(byOrder);
+}
+
 /**
- * Create an isolated deeplink handler registry. Application code should use the shared
- * `deeplink` instance; separate registries are mainly for tests.
+ * Create an isolated deeplink registry. Application code should use the shared `deeplink`
+ * instance; separate registries are mainly for tests.
  */
 export function createDeeplinkRegistry(): DeeplinkRegistry {
-  const registrations = new Map<string, Registration>();
+  const chains = new Map<string, Registration[]>();
   const pending = new Map<string, Set<PendingCall>>();
+  const flushScheduled = new Set<string>();
+  let seq = 0;
 
   function enqueue(key: string, call: PendingCall) {
     let queue = pending.get(key);
@@ -64,27 +113,48 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
 
   function dequeue(key: string, call: PendingCall) {
     const queue = pending.get(key);
-    if (!queue) return;
-    queue.delete(call);
-    if (queue.size === 0) pending.delete(key);
+    if (queue?.delete(call) && queue.size === 0) pending.delete(key);
   }
 
-  function handle<TResult>(key: string, handler: DeeplinkHandler<TResult>): () => void {
-    assertKey(key);
-    if (isDev && registrations.has(key)) {
-      console.warn(`[daas-toolbox] deeplink "${key}" handler replaced`);
-    }
-    const registration: Registration = { handler };
-    registrations.set(key, registration);
-
-    const queue = pending.get(key);
-    if (queue) {
+  /** Start a key's waiting calls one microtask after its first handler, so same-tick registrations join. */
+  function scheduleFlush(key: string) {
+    if (!pending.has(key) || flushScheduled.has(key)) return;
+    flushScheduled.add(key);
+    queueMicrotask(() => {
+      flushScheduled.delete(key);
+      const waiting = pending.get(key);
+      const chain = chains.get(key);
+      if (!waiting || !chain) return;
       pending.delete(key);
-      for (const call of queue) call.start(handler);
-    }
+      for (const call of waiting) call.start(chain);
+    });
+  }
+
+  function registerHandler(
+    key: string,
+    handler: DeeplinkHandler,
+    options: DeeplinkRegisterOptions,
+  ): () => void {
+    assertKey(key);
+    assertHandler(handler);
+    const { owner, order } = readRegisterOptions(options);
+    const registration: Registration = { handler, owner, order, seq: seq++, global: false };
+    chains.set(
+      key,
+      insertRegistration(chains.get(key) ?? [], registration, () => {
+        if (isDev) {
+          console.warn(`[daas-toolbox] deeplink "${key}" handler from owner "${owner}" replaced`);
+        }
+      }),
+    );
+    scheduleFlush(key);
 
     return () => {
-      if (registrations.get(key) === registration) registrations.delete(key);
+      const current = chains.get(key);
+      if (!current || !current.includes(registration)) return;
+      const remaining = current.filter((existing) => existing !== registration);
+      if (remaining.length > 0) chains.set(key, remaining);
+      else chains.delete(key);
     };
   }
 
@@ -98,8 +168,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
     const opts: DeeplinkInvokeOptions = options ?? {};
 
     return new Promise<TResult>((resolve, reject) => {
-      // Inside the executor so an invalid timeout rejects instead of throwing synchronously
-      // (spec rule 2: only an invalid key throws synchronously).
+      // Inside the executor so an invalid timeout rejects instead of throwing synchronously.
       const { timeout = DEFAULT_TIMEOUT, signal } = opts;
       assertTimeout(timeout);
 
@@ -109,21 +178,28 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
       }
 
       const controller = new AbortController();
-      const ctx: DeeplinkHandlerContext = { options: opts, signal: controller.signal };
       let phase: DeeplinkPhase = 'waiting';
       let settled = false;
       let timer: ReturnType<typeof setTimeout> | undefined;
       let detachAbort = () => {};
 
       const call: PendingCall = {
-        start: (handler) => {
+        start: (keyChain) => {
           phase = 'running';
-          Promise.resolve()
-            .then(() => handler(params, ctx))
-            .then(
-              (value) => settle(() => resolve(value as TResult)),
-              (error: unknown) => settle(() => reject(error)),
-            );
+          const chain = [...keyChain];
+          const ctx: DeeplinkCallContext = {
+            key,
+            params,
+            input: params,
+            options: opts,
+            signal: controller.signal,
+            step: { index: 0, count: chain.length, owner: '', global: false },
+            state: {},
+          };
+          compose(chain, ctx).then(
+            (value) => settle(() => resolve(value as TResult)),
+            (error: unknown) => settle(() => reject(error)),
+          );
         },
       };
 
@@ -137,7 +213,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
         outcome();
       }
 
-      /** Rejects the call and aborts the handler's `ctx.signal` with the same reason. */
+      /** Rejects the call and aborts every handler's `ctx.signal` with the same reason. */
       function abortWith(reason: unknown) {
         settle(() => {
           controller.abort(reason);
@@ -158,15 +234,15 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
         detachAbort = () => signal.removeEventListener('abort', onAbort);
       }
 
-      const current = registrations.get(key);
-      if (current) call.start(current.handler);
+      const keyChain = chains.get(key);
+      if (keyChain) call.start(keyChain);
       else enqueue(key, call);
     });
   }
 
   function has(key: string): boolean {
-    return registrations.has(key);
+    return chains.has(key);
   }
 
-  return { handle, invoke, has };
+  return { registerHandler, invoke, has };
 }
