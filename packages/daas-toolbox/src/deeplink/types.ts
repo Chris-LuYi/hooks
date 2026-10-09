@@ -117,3 +117,42 @@ export interface TypedDeeplinkRegistry<M extends DeeplinkContractMap<M>> {
 
 /** Contract map used when `createAppDeeplinks()` is called without a type argument. */
 export type UntypedDeeplinks = Record<string, { params?: object; result?: unknown }>;
+
+/** Position of a handler within one call's chain. */
+export interface DeeplinkStepInfo {
+  /** 0-based position in this call's chain snapshot. */
+  index: number;
+  /** Number of handlers in this call's chain snapshot. */
+  count: number;
+  /** The handler's owner. */
+  owner: string;
+  /** Whether this is a global handler (`registerGlobalHandler`) rather than a key handler. */
+  global: boolean;
+}
+
+/**
+ * Context each handler receives. `key`, `input`, `options`, `signal` and `step` are owned by the
+ * runtime: values passed for them through `next(ctx)` are overwritten.
+ */
+export interface DeeplinkCallContext {
+  /** The invoked key. */
+  readonly key: string;
+  /** Current payload. Starts as the caller's params; upstream handlers may replace it via next(ctx). */
+  params: unknown;
+  /** The caller's original params; never changed by handlers. */
+  readonly input: DeeplinkParams;
+  /** The options the caller passed (`{}` when omitted). */
+  readonly options: DeeplinkInvokeOptions;
+  /** Aborted on timeout or caller abort; the same signal for every handler of the call. */
+  readonly signal: AbortSignal;
+  /** Position of the handler receiving this context. */
+  readonly step: DeeplinkStepInfo;
+  /** Scratch space shared by every handler of this call. */
+  state: Record<string, unknown>;
+}
+
+/**
+ * Continue the chain. Pass a new context to change what downstream handlers see. Resolves to
+ * what downstream returned; after the last handler, to that context's `params`.
+ */
+export type DeeplinkNext = (ctx?: DeeplinkCallContext) => Promise<unknown>;
