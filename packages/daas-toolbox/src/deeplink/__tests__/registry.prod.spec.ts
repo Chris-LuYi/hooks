@@ -28,3 +28,21 @@ test('a version mismatch does not warn in production', async () => {
   expect(deeplink).toBe(foreign);
   expect(warn).not.toHaveBeenCalled();
 });
+
+test('replacing a global handler does not warn in production', () => {
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  const reg = createDeeplinkRegistry();
+  reg.registerGlobalHandler((_ctx, next) => next(), { owner: 'logger' });
+  reg.registerGlobalHandler((_ctx, next) => next(), { owner: 'logger' });
+  expect(warn).not.toHaveBeenCalled();
+});
+
+test('a throwing subscriber is not reported in production', () => {
+  const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+  const reg = createDeeplinkRegistry();
+  reg.subscribe(() => {
+    throw new Error('x');
+  });
+  reg.registerHandler('k', () => 1, { owner: 'a' });
+  expect(error).not.toHaveBeenCalled();
+});

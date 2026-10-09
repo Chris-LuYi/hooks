@@ -130,6 +130,19 @@ export interface DeeplinkRegistry {
   ): Promise<TResult>;
   /** Whether at least one key handler is registered for `key` (global handlers don't count). */
   has(key: string): boolean;
+  /**
+   * Register a global handler that wraps every key's chain (always outermost). Meant for the host
+   * (logger, tracker). The same `owner` replaces its own global handler.
+   * @returns an identity-safe `unregister` that removes only this registration
+   */
+  registerGlobalHandler(handler: DeeplinkHandler, options: DeeplinkRegisterOptions): () => void;
+  /** Read-only snapshot of global handlers and every key with handlers or waiting calls. */
+  inspect(): DeeplinkInspection;
+  /**
+   * Call `listener` after any change to handlers or waiting counts.
+   * @returns an idempotent unsubscribe function
+   */
+  subscribe(listener: () => void): () => void;
 }
 
 /**

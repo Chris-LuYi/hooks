@@ -26,6 +26,9 @@ describe('@daas/toolbox barrel', () => {
       registerHandler: expect.any(Function),
       invoke: expect.any(Function),
       has: expect.any(Function),
+      registerGlobalHandler: expect.any(Function),
+      inspect: expect.any(Function),
+      subscribe: expect.any(Function),
     });
   });
 });

@@ -4,10 +4,12 @@ import { DeeplinkTimeoutError } from './errors';
 import type {
   DeeplinkCallContext,
   DeeplinkHandler,
+  DeeplinkInspection,
   DeeplinkInvokeOptions,
   DeeplinkPhase,
   DeeplinkRegisterOptions,
   DeeplinkRegistry,
+  DeeplinkStepStatus,
 } from './types';
 
 /** Default time budget for `invoke`, from the call until it settles. */
@@ -33,6 +35,10 @@ interface PendingCall {
 
 function byOrder(a: Registration, b: Registration): number {
   return a.order - b.order || a.seq - b.seq;
+}
+
+function toStatus({ owner, order }: Registration): DeeplinkStepStatus {
+  return { owner, order };
 }
 
 function assertKey(key: unknown): asserts key is string {
@@ -100,7 +106,19 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
   const chains = new Map<string, Registration[]>();
   const pending = new Map<string, Set<PendingCall>>();
   const flushScheduled = new Set<string>();
+  const listeners = new Set<() => void>();
+  let globals: Registration[] = [];
   let seq = 0;
+
+  function notify() {
+    for (const listener of [...listeners]) {
+      try {
+        listener();
+      } catch (error) {
+        if (isDev) console.error('[daas-toolbox] deeplink subscriber threw', error);
+      }
+    }
+  }
 
   function enqueue(key: string, call: PendingCall) {
     let queue = pending.get(key);
@@ -109,11 +127,15 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
       pending.set(key, queue);
     }
     queue.add(call);
+    notify();
   }
 
   function dequeue(key: string, call: PendingCall) {
     const queue = pending.get(key);
-    if (queue?.delete(call) && queue.size === 0) pending.delete(key);
+    if (queue?.delete(call)) {
+      if (queue.size === 0) pending.delete(key);
+      notify();
+    }
   }
 
   /** Start a key's waiting calls one microtask after its first handler, so same-tick registrations join. */
@@ -126,6 +148,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
       const chain = chains.get(key);
       if (!waiting || !chain) return;
       pending.delete(key);
+      notify();
       for (const call of waiting) call.start(chain);
     });
   }
@@ -147,6 +170,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
         }
       }),
     );
+    notify();
     scheduleFlush(key);
 
     return () => {
@@ -155,6 +179,26 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
       const remaining = current.filter((existing) => existing !== registration);
       if (remaining.length > 0) chains.set(key, remaining);
       else chains.delete(key);
+      notify();
+    };
+  }
+
+  function registerGlobalHandler(
+    handler: DeeplinkHandler,
+    options: DeeplinkRegisterOptions,
+  ): () => void {
+    assertHandler(handler);
+    const { owner, order } = readRegisterOptions(options);
+    const registration: Registration = { handler, owner, order, seq: seq++, global: true };
+    globals = insertRegistration(globals, registration, () => {
+      if (isDev) console.warn(`[daas-toolbox] global handler from owner "${owner}" replaced`);
+    });
+    notify();
+
+    return () => {
+      if (!globals.includes(registration)) return;
+      globals = globals.filter((existing) => existing !== registration);
+      notify();
     };
   }
 
@@ -186,7 +230,8 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
       const call: PendingCall = {
         start: (keyChain) => {
           phase = 'running';
-          const chain = [...keyChain];
+          // Snapshot: global handlers (outermost) + key handlers, as they are right now.
+          const chain = [...globals, ...keyChain];
           const ctx: DeeplinkCallContext = {
             key,
             params,
@@ -244,5 +289,24 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
     return chains.has(key);
   }
 
-  return { registerHandler, invoke, has };
+  function inspect(): DeeplinkInspection {
+    const keys = [...new Set([...chains.keys(), ...pending.keys()])].sort();
+    return {
+      global: globals.map(toStatus),
+      keys: keys.map((key) => ({
+        key,
+        steps: (chains.get(key) ?? []).map(toStatus),
+        waiting: pending.get(key)?.size ?? 0,
+      })),
+    };
+  }
+
+  function subscribe(listener: () => void): () => void {
+    listeners.add(listener);
+    return () => {
+      listeners.delete(listener);
+    };
+  }
+
+  return { registerHandler, invoke, has, registerGlobalHandler, inspect, subscribe };
 }
