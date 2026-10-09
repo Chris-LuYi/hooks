@@ -32,6 +32,9 @@ export function createAppDeeplinks<M extends DeeplinkContractMap<M> = UntypedDee
       invoke: (key, params, options) =>
         registry.invoke(key, params as Record<string, unknown> | undefined, options),
       has: (key) => registry.has(key),
+      registerGlobalHandler: (handler, options) => registry.registerGlobalHandler(handler, options),
+      inspect: () => registry.inspect(),
+      subscribe: (listener) => registry.subscribe(listener),
     };
     facades.set(registry, facade);
   }

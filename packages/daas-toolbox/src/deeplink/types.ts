@@ -217,6 +217,12 @@ export interface TypedDeeplinkRegistry<M extends DeeplinkContractMap<M>> {
   ): Promise<DeeplinkResultOf<M[K]>>;
   /** Whether at least one key handler is registered for `key`. */
   has(key: keyof M & string): boolean;
+  /** Register a global handler (untyped: it wraps every key). */
+  registerGlobalHandler(handler: DeeplinkHandler, options: DeeplinkRegisterOptions): () => void;
+  /** Read-only snapshot of global handlers and every key with handlers or waiting calls. */
+  inspect(): DeeplinkInspection;
+  /** Call `listener` after any change to handlers or waiting counts. */
+  subscribe(listener: () => void): () => void;
 }
 
 /** Contract map used when `createAppDeeplinks()` is called without a type argument. */

@@ -141,3 +141,25 @@ describe('createAppDeeplinks (types, checked by tsc)', () => {
     expect(typeChecks).toBeTypeOf('function');
   });
 });
+
+describe('createAppDeeplinks (global handlers and tracking)', () => {
+  test('registerGlobalHandler, inspect and subscribe reach the underlying registry', async () => {
+    const reg = createDeeplinkRegistry();
+    const dl = createAppDeeplinks<TestDeeplinks>(reg);
+    let changes = 0;
+    const unsubscribe = dl.subscribe(() => {
+      changes += 1;
+    });
+    const unregisterGlobal = dl.registerGlobalHandler(
+      async (_ctx, next) => `[${String(await next())}]`,
+      { owner: 'wrap' },
+    );
+    dl.registerHandler('ui.ping', () => 'pong', { owner: 'ping' });
+    await expect(dl.invoke('ui.ping')).resolves.toBe('[pong]');
+    expect(dl.inspect()).toEqual(reg.inspect());
+    expect(dl.inspect().global).toEqual([{ owner: 'wrap', order: 0 }]);
+    expect(changes).toBe(2);
+    unregisterGlobal();
+    unsubscribe();
+  });
+});
