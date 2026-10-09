@@ -91,20 +91,25 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
   function invoke<TResult = unknown>(
     key: string,
     params?: Record<string, unknown>,
-    options: DeeplinkInvokeOptions = {},
+    options?: DeeplinkInvokeOptions,
   ): Promise<TResult> {
     assertKey(key);
-    const { timeout = DEFAULT_TIMEOUT, signal } = options;
-    assertTimeout(timeout);
+    // `?? {}` rather than a default parameter, so an explicit `null` is treated as omitted
+    const opts: DeeplinkInvokeOptions = options ?? {};
 
     return new Promise<TResult>((resolve, reject) => {
+      // Inside the executor so an invalid timeout rejects instead of throwing synchronously
+      // (spec rule 2: only an invalid key throws synchronously).
+      const { timeout = DEFAULT_TIMEOUT, signal } = opts;
+      assertTimeout(timeout);
+
       if (signal?.aborted) {
         reject(signal.reason);
         return;
       }
 
       const controller = new AbortController();
-      const ctx: DeeplinkHandlerContext = { options, signal: controller.signal };
+      const ctx: DeeplinkHandlerContext = { options: opts, signal: controller.signal };
       let phase: DeeplinkPhase = 'waiting';
       let settled = false;
       let timer: ReturnType<typeof setTimeout> | undefined;

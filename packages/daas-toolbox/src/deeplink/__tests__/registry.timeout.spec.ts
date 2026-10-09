@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { DeeplinkTimeoutError } from '../errors';
 import { createDeeplinkRegistry } from '../registry';
-import type { DeeplinkHandlerContext } from '../types';
+import type { DeeplinkHandlerContext, DeeplinkInvokeOptions } from '../types';
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -107,11 +107,28 @@ describe('timeout', () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  test.each([Number.NaN, -1, '100'])('timeout %s throws TypeError synchronously', (timeout) => {
+  test.each([Number.NaN, -1, '100'])(
+    'timeout %s rejects with TypeError instead of throwing synchronously (spec rule 2)',
+    async (timeout) => {
+      const reg = createDeeplinkRegistry();
+      let p: Promise<unknown> = Promise.resolve();
+      expect(() => {
+        p = reg.invoke('k', undefined, { timeout: timeout as number });
+      }).not.toThrow();
+      await expect(p).rejects.toThrow(
+        new TypeError(
+          `[daas-toolbox] deeplink timeout must be a non-negative number or Infinity, got ${String(timeout)}`,
+        ),
+      );
+    },
+  );
+
+  test('null options behave like omitted options', async () => {
     const reg = createDeeplinkRegistry();
-    expect(() => reg.invoke('k', undefined, { timeout: timeout as number })).toThrow(
-      `[daas-toolbox] deeplink timeout must be a non-negative number or Infinity, got ${String(timeout)}`,
-    );
+    reg.handle('k', (_params, ctx) => ctx.options);
+    await expect(
+      reg.invoke('k', undefined, null as unknown as DeeplinkInvokeOptions),
+    ).resolves.toEqual({});
   });
 
   test('settling clears the timer', async () => {
