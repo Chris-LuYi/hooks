@@ -59,3 +59,61 @@ export interface DeeplinkRegistry {
   /** Whether a handler is currently registered for `key`. */
   has(key: string): boolean;
 }
+
+/**
+ * One deeplink's contract: what the caller sends and what the handler returns.
+ * Omit `params` (or make it optional / `undefined`) for keys callers may invoke without params;
+ * omit `result` for handlers that return nothing.
+ */
+export interface DeeplinkContract {
+  params?: object;
+  result?: unknown;
+}
+
+/**
+ * A map of deeplink key → contract, usually an `interface` in a shared contracts module that MFEs
+ * import type-only. Written as a self-referential mapped type so plain interfaces (which have no
+ * index signature) satisfy it.
+ * @example
+ * export interface AppDeeplinks {
+ *   'orders.open': { params: { id: string }; result: { opened: boolean } };
+ *   'auth.reauth': { result: { token: string } };
+ * }
+ */
+export type DeeplinkContractMap<M> = { [K in keyof M]: DeeplinkContract };
+
+/** The `params` type of a contract (`undefined` when the contract declares none). */
+export type DeeplinkParamsOf<C> = 'params' extends keyof C ? C['params' & keyof C] : undefined;
+
+/** The `result` type of a contract (`void` when the contract declares none). */
+export type DeeplinkResultOf<C> = 'result' extends keyof C ? C['result' & keyof C] : void;
+
+/** `invoke` arguments after the key: `params` is required unless the contract allows `undefined`. */
+export type DeeplinkInvokeArgs<C> = undefined extends DeeplinkParamsOf<C>
+  ? [params?: DeeplinkParamsOf<C>, options?: DeeplinkInvokeOptions]
+  : [params: DeeplinkParamsOf<C>, options?: DeeplinkInvokeOptions];
+
+/** A handler typed by its contract. */
+export type TypedDeeplinkHandler<C> = (
+  params: DeeplinkParamsOf<C>,
+  ctx: DeeplinkHandlerContext,
+) => DeeplinkResultOf<C> | Promise<DeeplinkResultOf<C>>;
+
+/**
+ * Typed view of a deeplink registry, created by `createAppDeeplinks<M>()`. Same runtime object
+ * semantics as `DeeplinkRegistry`; only the types differ.
+ */
+export interface TypedDeeplinkRegistry<M extends DeeplinkContractMap<M>> {
+  /** Register a handler whose params and return value are checked against the contract. */
+  handle<K extends keyof M & string>(key: K, handler: TypedDeeplinkHandler<M[K]>): () => void;
+  /** Invoke `key`; params are checked and the result type is inferred from the contract. */
+  invoke<K extends keyof M & string>(
+    key: K,
+    ...args: DeeplinkInvokeArgs<M[K]>
+  ): Promise<DeeplinkResultOf<M[K]>>;
+  /** Whether a handler is currently registered for `key`. */
+  has(key: keyof M & string): boolean;
+}
+
+/** Contract map used when `createAppDeeplinks()` is called without a type argument. */
+export type UntypedDeeplinks = Record<string, { params?: object; result?: unknown }>;

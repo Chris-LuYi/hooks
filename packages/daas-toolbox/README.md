@@ -51,6 +51,36 @@ try {
 }
 ```
 
+### Typed deeplinks (recommended)
+
+Declare each deeplink's contract once, in a shared module MFEs import **type-only**, then use
+`createAppDeeplinks<M>()`. This follows the same pattern as daas-sdk `createAppEvents<T>()`.
+
+```ts
+// contracts (type-only import, no runtime coupling between MFEs)
+export interface AppDeeplinks {
+  'orders.open': { params: { id: string; tab?: 'items' | 'history' }; result: { opened: boolean } };
+  'auth.reauth': { result: { token: string } }; // no params: invoke('auth.reauth')
+}
+
+import type { AppDeeplinks } from './contracts';
+const dl = createAppDeeplinks<AppDeeplinks>();
+
+// owner MFE: params typed, return value checked against the contract
+useDeeplinkHandler(dl, 'orders.open', async ({ id }) => ({ opened: true }));
+
+// caller MFE
+const res = await dl.invoke('orders.open', { id: '42' }); // res: { opened: boolean }
+dl.invoke('orders.open', { idd: '42' });                  // compile error
+```
+
+- At runtime the typed facade *is* the shared registry, so typed and untyped callers interoperate.
+- `createAppDeeplinks()` returns the same object every time, so it is safe to call inside a component.
+- Types are checked when each MFE is built, not at runtime. If two MFEs ship different versions
+  of a contract, nothing catches the mismatch when the call crosses between them.
+- Called without a type argument, it falls back to string keys and `unknown` results, the same
+  as `deeplink.invoke<T>()`.
+
 Behavior:
 
 - **One handler per key; the latest registration wins.** A dev warning is logged when a

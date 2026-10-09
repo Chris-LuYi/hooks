@@ -12,11 +12,20 @@ export const deeplink = getGlobalRegistry();
 
 export { DeeplinkTimeoutError, isDeeplinkTimeoutError } from './errors';
 export { createDeeplinkRegistry } from './registry';
+export { createAppDeeplinks } from './typed';
 export type {
+  DeeplinkContract,
+  DeeplinkContractMap,
   DeeplinkHandler,
   DeeplinkHandlerContext,
+  DeeplinkInvokeArgs,
   DeeplinkInvokeOptions,
   DeeplinkParams,
+  DeeplinkParamsOf,
   DeeplinkPhase,
   DeeplinkRegistry,
+  DeeplinkResultOf,
+  TypedDeeplinkHandler,
+  TypedDeeplinkRegistry,
+  UntypedDeeplinks,
 } from './types';

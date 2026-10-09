@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { StrictMode } from 'react';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { deeplink } from '../../../deeplink';
+import { createAppDeeplinks, deeplink } from '../../../deeplink';
 import useDeeplinkHandler from '../index';
 
 afterEach(() => {
@@ -51,6 +51,17 @@ describe('useDeeplinkHandler', () => {
     expect(warn).not.toHaveBeenCalled();
     unmount();
     expect(deeplink.has('hook.strict')).toBe(false);
+  });
+
+  test('accepts a typed registry and infers params from its contract', async () => {
+    interface HookDeeplinks {
+      'hook.typed': { params: { n: number }; result: number };
+    }
+    const dl = createAppDeeplinks<HookDeeplinks>();
+    const { unmount } = renderHook(() => useDeeplinkHandler(dl, 'hook.typed', ({ n }) => n * 2));
+    await expect(dl.invoke('hook.typed', { n: 21 })).resolves.toBe(42);
+    unmount();
+    expect(dl.has('hook.typed')).toBe(false);
   });
 
   test('a call made before mount is delivered once the hook registers', async () => {

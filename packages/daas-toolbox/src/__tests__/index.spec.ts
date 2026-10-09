@@ -14,6 +14,7 @@ describe('@daas/toolbox barrel', () => {
     'isCancelledError',
     'CancelledError',
     'createDeeplinkRegistry',
+    'createAppDeeplinks',
     'DeeplinkTimeoutError',
     'isDeeplinkTimeoutError',
   ])('exports %s', (name) => {
