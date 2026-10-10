@@ -1,4 +1,4 @@
-import type { DeeplinkCallContext, DeeplinkNext } from './types';
+import type { DeeplinkCallContext, DeeplinkNext } from "./types";
 
 /** One entry of a chain snapshot. */
 export interface ComposeStep {
@@ -8,7 +8,7 @@ export interface ComposeStep {
 }
 
 /** Call-wide fields the runtime owns; handlers cannot change them through next(ctx). */
-type FixedFields = Pick<DeeplinkCallContext, 'key' | 'input' | 'options' | 'signal'>;
+type FixedFields = Pick<DeeplinkCallContext, "key" | "input" | "options" | "signal">;
 
 /**
  * Run `steps` as an onion around `ctx`: each handler gets `next`, which runs the rest of the
@@ -34,9 +34,7 @@ export function compose(steps: readonly ComposeStep[], ctx: DeeplinkCallContext)
     let called = false;
     const next: DeeplinkNext = (nextCtx) => {
       if (called) {
-        return Promise.reject(
-          new Error(`[daas-toolbox] deeplink "${fixed.key}": next() called multiple times`),
-        );
+        return Promise.reject(new Error(`[daas-toolbox] deeplink "${fixed.key}": next() called multiple times`));
       }
       called = true;
       return dispatch(index + 1, nextCtx ?? stepCtx);

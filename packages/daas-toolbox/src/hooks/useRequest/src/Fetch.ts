@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-parameter-properties */
-import type { RefObject } from 'react';
-import { isFunction } from '../../../utils';
-import type { FetchState, Options, PluginReturn, Service, Subscribe } from './types';
-import { CancelledError, isCancelledError } from './utils/cancelledError';
+import type { RefObject } from "react";
+import { isFunction } from "../../../utils";
+import type { FetchState, Options, PluginReturn, Service, Subscribe } from "./types";
+import { CancelledError, isCancelledError } from "./utils/cancelledError";
 
 export default class Fetch<TData, TParams extends any[]> {
   pluginImpls: PluginReturn<TData, TParams>[] = [];
@@ -47,11 +47,7 @@ export default class Fetch<TData, TParams extends any[]> {
     this.count += 1;
     const currentCount = this.count;
 
-    const {
-      stopNow = false,
-      returnNow = false,
-      ...state
-    } = this.runPluginHandler('onBefore', params);
+    const { stopNow = false, returnNow = false, ...state } = this.runPluginHandler("onBefore", params);
 
     // stop request
     if (stopNow) {
@@ -73,7 +69,7 @@ export default class Fetch<TData, TParams extends any[]> {
 
     try {
       // replace service
-      let { servicePromise } = this.runPluginHandler('onRequest', this.serviceRef.current, params);
+      let { servicePromise } = this.runPluginHandler("onRequest", this.serviceRef.current, params);
 
       if (!servicePromise) {
         servicePromise = this.serviceRef.current(...params);
@@ -94,12 +90,12 @@ export default class Fetch<TData, TParams extends any[]> {
       });
 
       this.options.onSuccess?.(res, params);
-      this.runPluginHandler('onSuccess', res, params);
+      this.runPluginHandler("onSuccess", res, params);
 
       this.options.onFinally?.(params, res, undefined);
 
       if (currentCount === this.count) {
-        this.runPluginHandler('onFinally', params, res, undefined);
+        this.runPluginHandler("onFinally", params, res, undefined);
       }
 
       return res;
@@ -114,12 +110,12 @@ export default class Fetch<TData, TParams extends any[]> {
       });
 
       this.options.onError?.(error as Error, params);
-      this.runPluginHandler('onError', error, params);
+      this.runPluginHandler("onError", error, params);
 
       this.options.onFinally?.(params, undefined, error as Error | undefined);
 
       if (currentCount === this.count) {
-        this.runPluginHandler('onFinally', params, undefined, error);
+        this.runPluginHandler("onFinally", params, undefined, error);
       }
 
       throw error;
@@ -145,7 +141,7 @@ export default class Fetch<TData, TParams extends any[]> {
       loading: false,
     });
 
-    this.runPluginHandler('onCancel');
+    this.runPluginHandler("onCancel");
   }
 
   refresh() {
@@ -160,7 +156,7 @@ export default class Fetch<TData, TParams extends any[]> {
 
   mutate(data?: TData | ((oldData?: TData) => TData | undefined)) {
     const targetData = isFunction(data) ? data(this.state.data) : data;
-    this.runPluginHandler('onMutate', targetData);
+    this.runPluginHandler("onMutate", targetData);
     this.setState({
       data: targetData,
     });

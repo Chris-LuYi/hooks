@@ -1,17 +1,15 @@
-import { act, type RenderHookResult, renderHook } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
-import { request } from '../../../utils/testingHelpers';
-import useRequest, { CancelledError } from '../index';
+import { act, type RenderHookResult, renderHook } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
+import { request } from "../../../utils/testingHelpers";
+import useRequest, { CancelledError } from "../index";
 
-describe('useDebouncePlugin', () => {
-  const setUp = (
-    service: Parameters<typeof useRequest>[0],
-    options: Parameters<typeof useRequest>[1],
-  ) => renderHook((o) => useRequest(service, o || options));
+describe("useDebouncePlugin", () => {
+  const setUp = (service: Parameters<typeof useRequest>[0], options: Parameters<typeof useRequest>[1]) =>
+    renderHook((o) => useRequest(service, o || options));
 
   let hook: RenderHookResult<any, any>;
 
-  test('useDebouncePlugin should work', () => {
+  test("useDebouncePlugin should work", () => {
     vi.useFakeTimers();
     const callback = vi.fn();
 
@@ -74,9 +72,9 @@ describe('useDebouncePlugin', () => {
     hook.unmount();
   });
 
-  test('runAsync should reject a queued call when cancel is called', async () => {
+  test("runAsync should reject a queued call when cancel is called", async () => {
     vi.useFakeTimers();
-    const service = vi.fn().mockResolvedValue('success');
+    const service = vi.fn().mockResolvedValue("success");
     const onRejected = vi.fn();
 
     act(() => {
@@ -99,7 +97,7 @@ describe('useDebouncePlugin', () => {
     hook.unmount();
   });
 
-  test('runAsync should reject a queued call when it is superseded', async () => {
+  test("runAsync should reject a queued call when it is superseded", async () => {
     vi.useFakeTimers();
     const service = vi.fn((value: string) => Promise.resolve(value));
     const onFirstRejected = vi.fn();
@@ -114,22 +112,22 @@ describe('useDebouncePlugin', () => {
     hook.rerender();
 
     await act(async () => {
-      hook.result.current.runAsync('first').catch(onFirstRejected);
-      hook.result.current.runAsync('second').then(onSecondFulfilled);
+      hook.result.current.runAsync("first").catch(onFirstRejected);
+      hook.result.current.runAsync("second").then(onSecondFulfilled);
       vi.runAllTimers();
     });
 
     expect(onFirstRejected).toHaveBeenCalledTimes(1);
     expect(onFirstRejected.mock.calls[0][0]).toBeInstanceOf(CancelledError);
     expect(service).toHaveBeenCalledTimes(1);
-    expect(service).toHaveBeenCalledWith('second');
-    expect(onSecondFulfilled).toHaveBeenCalledWith('second');
+    expect(service).toHaveBeenCalledWith("second");
+    expect(onSecondFulfilled).toHaveBeenCalledWith("second");
     hook.unmount();
   });
 
-  test('runAsync should reject a queued call when ready becomes false', async () => {
+  test("runAsync should reject a queued call when ready becomes false", async () => {
     vi.useFakeTimers();
-    const service = vi.fn().mockResolvedValue('success');
+    const service = vi.fn().mockResolvedValue("success");
     const onRejected = vi.fn();
 
     act(() => {
@@ -158,7 +156,7 @@ describe('useDebouncePlugin', () => {
     hook.unmount();
   });
 
-  test('useDebouncePlugin should bypass debounce when ready is false', () => {
+  test("useDebouncePlugin should bypass debounce when ready is false", () => {
     vi.useFakeTimers();
     const callback = vi.fn();
 
@@ -204,7 +202,7 @@ describe('useDebouncePlugin', () => {
     hook.unmount();
   });
 
-  test('runAsync should reject a call suppressed when trailing is false', async () => {
+  test("runAsync should reject a call suppressed when trailing is false", async () => {
     vi.useFakeTimers();
     const service = vi.fn((value: string) => Promise.resolve(value));
 
@@ -219,8 +217,8 @@ describe('useDebouncePlugin', () => {
     hook.rerender();
 
     await act(async () => {
-      await expect(hook.result.current.runAsync('first')).resolves.toBe('first');
-      await expect(hook.result.current.runAsync('dropped')).rejects.toBeInstanceOf(CancelledError);
+      await expect(hook.result.current.runAsync("first")).resolves.toBe("first");
+      await expect(hook.result.current.runAsync("dropped")).rejects.toBeInstanceOf(CancelledError);
       vi.advanceTimersByTime(100);
     });
 

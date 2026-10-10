@@ -1,2 +1,2 @@
-export * from './deeplink';
-export * from './hooks';
+export * from "./deeplink";
+export * from "./hooks";

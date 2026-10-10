@@ -1,30 +1,21 @@
-import { useEffect } from 'react';
-import { deeplink } from '../../deeplink';
+import { useEffect } from "react";
+import { deeplink } from "../../deeplink";
 import type {
   DeeplinkContractMap,
   DeeplinkHandler,
   DeeplinkRegisterOptions,
   TypedDeeplinkHandler,
   TypedDeeplinkRegistry,
-} from '../../deeplink/types';
-import useLatest from '../useLatest';
+} from "../../deeplink/types";
+import useLatest from "../useLatest";
 
 /** The part of a registry this hook needs; `deeplink` and typed facades both provide it. */
 interface RegisterTarget {
-  registerHandler(
-    key: string,
-    handler: DeeplinkHandler,
-    options: DeeplinkRegisterOptions,
-  ): () => void;
+  registerHandler(key: string, handler: DeeplinkHandler, options: DeeplinkRegisterOptions): () => void;
 }
 
 type UntypedArgs = [key: string, handler: DeeplinkHandler, options: DeeplinkRegisterOptions];
-type TypedArgs = [
-  registry: RegisterTarget,
-  key: string,
-  handler: DeeplinkHandler,
-  options: DeeplinkRegisterOptions,
-];
+type TypedArgs = [registry: RegisterTarget, key: string, handler: DeeplinkHandler, options: DeeplinkRegisterOptions];
 
 /**
  * Register a deeplink handler for the lifetime of the component — the recommended way for MFEs,
@@ -45,11 +36,7 @@ type TypedArgs = [
  *   return { opened: true };
  * }, { owner: 'orders', order: 500 });
  */
-function useDeeplinkHandler(
-  key: string,
-  handler: DeeplinkHandler,
-  options: DeeplinkRegisterOptions,
-): void;
+function useDeeplinkHandler(key: string, handler: DeeplinkHandler, options: DeeplinkRegisterOptions): void;
 /**
  * Typed form: `ctx.input` is typed from the contract of a registry created by
  * `createAppDeeplinks<M>()`.
@@ -69,14 +56,13 @@ function useDeeplinkHandler<M extends DeeplinkContractMap<M>, K extends keyof M 
 function useDeeplinkHandler(...args: UntypedArgs | TypedArgs): void {
   // A string first argument means the untyped form (the global registry).
   const [registry, key, handler, options]: TypedArgs =
-    typeof args[0] === 'string' ? [deeplink, ...(args as UntypedArgs)] : (args as TypedArgs);
+    typeof args[0] === "string" ? [deeplink, ...(args as UntypedArgs)] : (args as TypedArgs);
   const { owner, order } = options;
   const handlerRef = useLatest(handler);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: handlerRef is a stable ref; re-registering on every handler change is exactly what this hook avoids
   useEffect(
-    () =>
-      registry.registerHandler(key, (ctx, next) => handlerRef.current(ctx, next), { owner, order }),
+    () => registry.registerHandler(key, (ctx, next) => handlerRef.current(ctx, next), { owner, order }),
     [registry, key, owner, order],
   );
 }

@@ -1,11 +1,11 @@
-import { useDeeplinkHandler } from '../../src';
-import { pushTrail } from './contracts';
-import { appDeeplinks } from './deeplinks';
+import { useDeeplinkHandler } from "../../src";
+import { pushTrail } from "./contracts";
+import { appDeeplinks } from "./deeplinks";
 
 export class ForbiddenError extends Error {
   constructor() {
-    super('Forbidden: missing role orders:view');
-    this.name = 'ForbiddenError';
+    super("Forbidden: missing role orders:view");
+    this.name = "ForbiddenError";
   }
 }
 
@@ -20,13 +20,13 @@ export interface AuthMfeProps {
 export function AuthMfe({ user }: AuthMfeProps) {
   useDeeplinkHandler(
     appDeeplinks,
-    'orders.open',
+    "orders.open",
     (ctx, next) => {
-      pushTrail(ctx.state, 'auth');
-      if (!user.roles.includes('orders:view')) throw new ForbiddenError();
+      pushTrail(ctx.state, "auth");
+      if (!user.roles.includes("orders:view")) throw new ForbiddenError();
       return next({ ...ctx, params: { ...ctx.input, viewer: user.name } });
     },
-    { owner: 'auth', order: 10 },
+    { owner: "auth", order: 10 },
   );
   return null;
 }

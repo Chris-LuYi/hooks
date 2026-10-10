@@ -1,13 +1,13 @@
-import useCreation from '../../useCreation';
-import useLatest from '../../useLatest';
-import useMemoizedFn from '../../useMemoizedFn';
-import useMount from '../../useMount';
-import useUnmount from '../../useUnmount';
-import useUpdate from '../../useUpdate';
-import isDev from '../../../utils/isDev';
+import isDev from "../../../utils/isDev";
+import useCreation from "../../useCreation";
+import useLatest from "../../useLatest";
+import useMemoizedFn from "../../useMemoizedFn";
+import useMount from "../../useMount";
+import useUnmount from "../../useUnmount";
+import useUpdate from "../../useUpdate";
 
-import Fetch from './Fetch';
-import type { Options, Plugin, Result, Service } from './types';
+import Fetch from "./Fetch";
+import type { Options, Plugin, Result, Service } from "./types";
 
 function useRequestImplement<TData, TParams extends any[]>(
   service: Service<TData, TParams>,
@@ -35,12 +35,7 @@ function useRequestImplement<TData, TParams extends any[]>(
   const fetchInstance = useCreation(() => {
     const initState = plugins.map((p) => p?.onInit?.(fetchOptions)).filter(Boolean);
 
-    return new Fetch<TData, TParams>(
-      serviceRef,
-      fetchOptions,
-      update,
-      Object.assign({}, ...initState),
-    );
+    return new Fetch<TData, TParams>(serviceRef, fetchOptions, update, Object.assign({}, ...initState));
   }, []);
   fetchInstance.options = fetchOptions;
   // run all plugins hooks

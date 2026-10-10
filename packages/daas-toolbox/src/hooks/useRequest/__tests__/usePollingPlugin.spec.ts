@@ -1,9 +1,9 @@
-import { act, type RenderHookResult, renderHook } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
-import { request } from '../../../utils/testingHelpers';
-import useRequest from '../index';
+import { act, type RenderHookResult, renderHook } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
+import { request } from "../../../utils/testingHelpers";
+import useRequest from "../index";
 
-describe('usePollingPlugin', () => {
+describe("usePollingPlugin", () => {
   vi.useFakeTimers();
 
   const setUp = <TData = string, TParams extends any[] = any[]>(
@@ -13,7 +13,7 @@ describe('usePollingPlugin', () => {
 
   let hook: RenderHookResult<any, any>;
 
-  test('usePollingPlugin pollingInterval=100 pollingWhenHidden=true  should work', async () => {
+  test("usePollingPlugin pollingInterval=100 pollingWhenHidden=true  should work", async () => {
     const callback = vi.fn();
     act(() => {
       hook = setUp(
@@ -34,7 +34,7 @@ describe('usePollingPlugin', () => {
       vi.advanceTimersByTime(1000);
     });
     expect(hook.result.current.loading).toBe(false);
-    expect(hook.result.current.data).toBe('success');
+    expect(hook.result.current.data).toBe("success");
     expect(callback).toHaveBeenCalledTimes(1);
 
     // 第一次 polling (100ms 间隔 + 1000ms 执行)
@@ -76,7 +76,7 @@ describe('usePollingPlugin', () => {
   });
 
   let hook2: RenderHookResult<any, any>;
-  test('usePollingPlugin pollingErrorRetryCount=3 should work', async () => {
+  test("usePollingPlugin pollingErrorRetryCount=3 should work", async () => {
     // if request error and set pollingErrorRetryCount
     // and the number of consecutive failures exceeds pollingErrorRetryCount, polling stops
     let errorCallback: any;

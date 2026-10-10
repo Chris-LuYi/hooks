@@ -1,9 +1,9 @@
-import isDev from '../utils/isDev';
-import { createDeeplinkRegistry } from './registry';
-import type { DeeplinkRegistry } from './types';
+import isDev from "../utils/isDev";
+import { createDeeplinkRegistry } from "./registry";
+import type { DeeplinkRegistry } from "./types";
 
 /** Shared across every bundle on the page: `Symbol.for` returns the same symbol everywhere. */
-const GLOBAL_KEY = Symbol.for('daas-toolbox/deeplink');
+const GLOBAL_KEY = Symbol.for("daas-toolbox/deeplink");
 
 /** Bump only when the registry's runtime shape changes incompatibly. */
 const GLOBAL_VERSION = 1;

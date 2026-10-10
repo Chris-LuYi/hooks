@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { type DeeplinkInspection, deeplink } from '../../src';
+import { useEffect, useState } from "react";
+import { type DeeplinkInspection, deeplink } from "../../src";
 
 export interface DeeplinkLogEntry {
   key: string;
@@ -32,7 +32,7 @@ export function installDeeplinkLogger(log: (entry: DeeplinkLogEntry) => void): (
         });
       }
     },
-    { owner: 'host-logger' },
+    { owner: "host-logger" },
   );
 }
 
@@ -47,12 +47,12 @@ export function DeeplinkStatusPanel() {
 
   return (
     <section aria-label="deeplink status">
-      <p>global: {status.global.map((s) => s.owner).join(', ') || 'none'}</p>
+      <p>global: {status.global.map((s) => s.owner).join(", ") || "none"}</p>
       <ul>
         {status.keys.map((k) => (
           <li key={k.key}>
-            {k.key}: {k.steps.map((s) => `${s.owner}(${s.order})`).join(' → ') || 'no handlers'}
-            {k.waiting > 0 ? ` (${k.waiting} waiting)` : ''}
+            {k.key}: {k.steps.map((s) => `${s.owner}(${s.order})`).join(" → ") || "no handlers"}
+            {k.waiting > 0 ? ` (${k.waiting} waiting)` : ""}
           </li>
         ))}
       </ul>

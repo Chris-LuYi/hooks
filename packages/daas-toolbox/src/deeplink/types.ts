@@ -20,7 +20,7 @@ export type DeeplinkParams = Record<string, unknown> | undefined;
  * - `'waiting'`: no key handler had been registered yet
  * - `'running'`: the chain started but did not settle in time
  */
-export type DeeplinkPhase = 'waiting' | 'running';
+export type DeeplinkPhase = "waiting" | "running";
 
 /** Position of a handler within one call's chain. */
 export interface DeeplinkStepInfo {
@@ -113,11 +113,7 @@ export interface DeeplinkRegistry {
    * handler. In React components prefer `useDeeplinkHandler`, which unregisters on unmount.
    * @returns an identity-safe `unregister` that removes only this registration
    */
-  registerHandler(
-    key: string,
-    handler: DeeplinkHandler,
-    options: DeeplinkRegisterOptions,
-  ): () => void;
+  registerHandler(key: string, handler: DeeplinkHandler, options: DeeplinkRegisterOptions): () => void;
   /**
    * Run the chain for `key`, waiting for a first key handler if none is registered.
    * @example
@@ -168,10 +164,11 @@ export interface DeeplinkContract {
 export type DeeplinkContractMap<M> = { [K in keyof M]: DeeplinkContract };
 
 /** The `params` type of a contract (`undefined` when the contract declares none). */
-export type DeeplinkParamsOf<C> = 'params' extends keyof C ? C['params' & keyof C] : undefined;
+export type DeeplinkParamsOf<C> = "params" extends keyof C ? C["params" & keyof C] : undefined;
 
 /** The `result` type of a contract (`void` when the contract declares none). */
-export type DeeplinkResultOf<C> = 'result' extends keyof C ? C['result' & keyof C] : void;
+// biome-ignore lint/suspicious/noConfusingVoidType: `void` is the documented result of a contract without `result`
+export type DeeplinkResultOf<C> = "result" extends keyof C ? C["result" & keyof C] : void;
 
 /** `invoke` arguments after the key: `params` is required unless the contract allows `undefined`. */
 export type DeeplinkInvokeArgs<C> = undefined extends DeeplinkParamsOf<C>
@@ -183,7 +180,7 @@ export type DeeplinkInvokeArgs<C> = undefined extends DeeplinkParamsOf<C>
  * (An `Omit` intersection, because an interface-typed `input` is not assignable to
  * `Record<string, unknown>`.)
  */
-export type TypedDeeplinkCallContext<C> = Omit<DeeplinkCallContext, 'input'> & {
+export type TypedDeeplinkCallContext<C> = Omit<DeeplinkCallContext, "input"> & {
   readonly input: DeeplinkParamsOf<C>;
 };
 
@@ -194,10 +191,7 @@ export type TypedDeeplinkNext<C> = (ctx?: TypedDeeplinkCallContext<C>) => Promis
  * A handler for a typed key. Only the chain's ends are typed: `ctx.input` is the contract's params,
  * while `ctx.params` and `next()`'s result are `unknown` (a handler can't know its position).
  */
-export type TypedDeeplinkHandler<C> = (
-  ctx: TypedDeeplinkCallContext<C>,
-  next: TypedDeeplinkNext<C>,
-) => unknown;
+export type TypedDeeplinkHandler<C> = (ctx: TypedDeeplinkCallContext<C>, next: TypedDeeplinkNext<C>) => unknown;
 
 /**
  * Typed view of a deeplink registry, created by `createAppDeeplinks<M>()`. Same runtime object
@@ -211,10 +205,7 @@ export interface TypedDeeplinkRegistry<M extends DeeplinkContractMap<M>> {
     options: DeeplinkRegisterOptions,
   ): () => void;
   /** Invoke `key`; params are checked and the result type is inferred from the contract. */
-  invoke<K extends keyof M & string>(
-    key: K,
-    ...args: DeeplinkInvokeArgs<M[K]>
-  ): Promise<DeeplinkResultOf<M[K]>>;
+  invoke<K extends keyof M & string>(key: K, ...args: DeeplinkInvokeArgs<M[K]>): Promise<DeeplinkResultOf<M[K]>>;
   /** Whether at least one key handler is registered for `key`. */
   has(key: keyof M & string): boolean;
   /** Register a global handler (untyped: it wraps every key). */

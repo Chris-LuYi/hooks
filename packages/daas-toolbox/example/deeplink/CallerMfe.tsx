@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { isDeeplinkTimeoutError } from '../../src';
-import { appDeeplinks } from './deeplinks';
+import { useState } from "react";
+import { isDeeplinkTimeoutError } from "../../src";
+import { appDeeplinks } from "./deeplinks";
 
 export interface CallerMfeProps {
   /** Per-call budget; the default in the toolbox is 10000 ms. */
@@ -9,19 +9,17 @@ export interface CallerMfeProps {
 
 /** Any MFE that wants an order opened: it only knows the key and the contract. */
 export function CallerMfe({ timeout = 10000 }: CallerMfeProps) {
-  const [message, setMessage] = useState('idle');
+  const [message, setMessage] = useState("idle");
 
   async function openOrder() {
-    setMessage('opening…');
+    setMessage("opening…");
     try {
-      const result = await appDeeplinks.invoke('orders.open', { orderId: '42' }, { timeout });
+      const result = await appDeeplinks.invoke("orders.open", { orderId: "42" }, { timeout });
       setMessage(`result: ${JSON.stringify(result)}`);
     } catch (error) {
       if (isDeeplinkTimeoutError(error)) {
         setMessage(
-          error.phase === 'waiting'
-            ? 'error: no MFE handles orders.open yet'
-            : 'error: orders.open took too long',
+          error.phase === "waiting" ? "error: no MFE handles orders.open yet" : "error: orders.open took too long",
         );
       } else {
         setMessage(`error: ${(error as Error).message}`);

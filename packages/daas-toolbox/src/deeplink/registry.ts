@@ -1,6 +1,6 @@
-import isDev from '../utils/isDev';
-import { type ComposeStep, compose } from './compose';
-import { DeeplinkTimeoutError } from './errors';
+import isDev from "../utils/isDev";
+import { type ComposeStep, compose } from "./compose";
+import { DeeplinkTimeoutError } from "./errors";
 import type {
   DeeplinkCallContext,
   DeeplinkHandler,
@@ -10,7 +10,7 @@ import type {
   DeeplinkRegisterOptions,
   DeeplinkRegistry,
   DeeplinkStepStatus,
-} from './types';
+} from "./types";
 
 /** Default time budget for `invoke`, from the call until it settles. */
 const DEFAULT_TIMEOUT = 10000;
@@ -42,17 +42,15 @@ function toStatus({ owner, order }: Registration): DeeplinkStepStatus {
 }
 
 function assertKey(key: unknown): asserts key is string {
-  if (typeof key !== 'string' || key === '') {
+  if (typeof key !== "string" || key === "") {
     throw new TypeError(
-      `[daas-toolbox] deeplink key must be a non-empty string, got ${
-        key === '' ? 'an empty string' : typeof key
-      }`,
+      `[daas-toolbox] deeplink key must be a non-empty string, got ${key === "" ? "an empty string" : typeof key}`,
     );
   }
 }
 
 function assertTimeout(timeout: unknown): asserts timeout is number {
-  if (typeof timeout !== 'number' || Number.isNaN(timeout) || timeout < 0) {
+  if (typeof timeout !== "number" || Number.isNaN(timeout) || timeout < 0) {
     throw new TypeError(
       `[daas-toolbox] deeplink timeout must be a non-negative number or Infinity, got ${String(timeout)}`,
     );
@@ -60,8 +58,8 @@ function assertTimeout(timeout: unknown): asserts timeout is number {
 }
 
 function assertHandler(handler: unknown): asserts handler is DeeplinkHandler {
-  if (typeof handler !== 'function') {
-    throw new TypeError('[daas-toolbox] deeplink handler must be a function');
+  if (typeof handler !== "function") {
+    throw new TypeError("[daas-toolbox] deeplink handler must be a function");
   }
 }
 
@@ -72,13 +70,11 @@ function readRegisterOptions(options: DeeplinkRegisterOptions | undefined): {
 } {
   const owner: unknown = options?.owner;
   const order: unknown = options?.order ?? 0;
-  if (typeof owner !== 'string' || owner === '') {
-    throw new TypeError('[daas-toolbox] deeplink owner must be a non-empty string');
+  if (typeof owner !== "string" || owner === "") {
+    throw new TypeError("[daas-toolbox] deeplink owner must be a non-empty string");
   }
-  if (typeof order !== 'number' || !Number.isFinite(order)) {
-    throw new TypeError(
-      `[daas-toolbox] deeplink order must be a finite number, got ${String(order)}`,
-    );
+  if (typeof order !== "number" || !Number.isFinite(order)) {
+    throw new TypeError(`[daas-toolbox] deeplink order must be a finite number, got ${String(order)}`);
   }
   return { owner, order };
 }
@@ -115,7 +111,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
       try {
         listener();
       } catch (error) {
-        if (isDev) console.error('[daas-toolbox] deeplink subscriber threw', error);
+        if (isDev) console.error("[daas-toolbox] deeplink subscriber threw", error);
       }
     }
   }
@@ -153,11 +149,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
     });
   }
 
-  function registerHandler(
-    key: string,
-    handler: DeeplinkHandler,
-    options: DeeplinkRegisterOptions,
-  ): () => void {
+  function registerHandler(key: string, handler: DeeplinkHandler, options: DeeplinkRegisterOptions): () => void {
     assertKey(key);
     assertHandler(handler);
     const { owner, order } = readRegisterOptions(options);
@@ -183,10 +175,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
     };
   }
 
-  function registerGlobalHandler(
-    handler: DeeplinkHandler,
-    options: DeeplinkRegisterOptions,
-  ): () => void {
+  function registerGlobalHandler(handler: DeeplinkHandler, options: DeeplinkRegisterOptions): () => void {
     assertHandler(handler);
     const { owner, order } = readRegisterOptions(options);
     const registration: Registration = { handler, owner, order, seq: seq++, global: true };
@@ -222,7 +211,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
       }
 
       const controller = new AbortController();
-      let phase: DeeplinkPhase = 'waiting';
+      let phase: DeeplinkPhase = "waiting";
       let settled = false;
       let timer: ReturnType<typeof setTimeout> | undefined;
       let detachAbort = () => {};
@@ -231,7 +220,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
         start: (keyChain) => {
           // A subscriber notified during the batch flush may already have settled this call.
           if (settled) return;
-          phase = 'running';
+          phase = "running";
           // Snapshot: global handlers (outermost) + key handlers, as they are right now.
           const chain = [...globals, ...keyChain];
           const ctx: DeeplinkCallContext = {
@@ -240,7 +229,7 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
             input: params,
             options: opts,
             signal: controller.signal,
-            step: { index: 0, count: chain.length, owner: '', global: false },
+            step: { index: 0, count: chain.length, owner: "", global: false },
             state: {},
           };
           compose(chain, ctx).then(
@@ -277,8 +266,8 @@ export function createDeeplinkRegistry(): DeeplinkRegistry {
 
       if (signal) {
         const onAbort = () => abortWith(signal.reason);
-        signal.addEventListener('abort', onAbort, { once: true });
-        detachAbort = () => signal.removeEventListener('abort', onAbort);
+        signal.addEventListener("abort", onAbort, { once: true });
+        detachAbort = () => signal.removeEventListener("abort", onAbort);
       }
 
       const keyChain = chains.get(key);

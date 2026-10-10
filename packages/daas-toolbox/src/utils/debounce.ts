@@ -38,7 +38,7 @@ export function debounce<T extends (...args: any[]) => any>(
   let lastInvokeTime = 0;
 
   const leading = !!options.leading;
-  const maxing = 'maxWait' in options && options.maxWait !== undefined;
+  const maxing = "maxWait" in options && options.maxWait !== undefined;
   const maxWait = maxing ? Math.max(options.maxWait ?? 0, wait) : 0;
   const trailing = options.trailing === undefined ? true : !!options.trailing;
 
@@ -65,11 +65,7 @@ export function debounce<T extends (...args: any[]) => any>(
     }
     const timeSinceLastCall = time - lastCallTime;
     const timeSinceLastInvoke = time - lastInvokeTime;
-    return (
-      timeSinceLastCall >= wait ||
-      timeSinceLastCall < 0 ||
-      (maxing && timeSinceLastInvoke >= maxWait)
-    );
+    return timeSinceLastCall >= wait || timeSinceLastCall < 0 || (maxing && timeSinceLastInvoke >= maxWait);
   }
 
   function trailingEdge(time: number) {

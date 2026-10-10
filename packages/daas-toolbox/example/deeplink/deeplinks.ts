@@ -1,5 +1,5 @@
-import { createAppDeeplinks } from '../../src';
-import type { AppDeeplinks } from './contracts';
+import { createAppDeeplinks } from "../../src";
+import type { AppDeeplinks } from "./contracts";
 
 /**
  * Typed view of the shared registry. Every MFE can create its own; `createAppDeeplinks()`

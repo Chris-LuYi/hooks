@@ -1,4 +1,4 @@
-const CANCELLED_ERROR_FLAG = '__AHOOKS_CANCELLED_ERROR__';
+const CANCELLED_ERROR_FLAG = "__AHOOKS_CANCELLED_ERROR__";
 
 interface PendingPromiseRef {
   current: ((reason?: unknown) => void) | undefined;
@@ -15,9 +15,9 @@ export class CancelledError extends Error {
   /** Marker that survives duplicated copies of the module, unlike `instanceof`. */
   readonly [CANCELLED_ERROR_FLAG] = true;
 
-  constructor(message = 'useRequest: the request was cancelled or superseded.') {
+  constructor(message = "useRequest: the request was cancelled or superseded.") {
     super(message);
-    this.name = 'CancelledError';
+    this.name = "CancelledError";
     // keep `instanceof` working when the class is downleveled
     Object.setPrototypeOf(this, CancelledError.prototype);
   }
@@ -26,9 +26,7 @@ export class CancelledError extends Error {
 export function isCancelledError(error: unknown): error is CancelledError {
   return (
     error instanceof CancelledError ||
-    (typeof error === 'object' &&
-      error !== null &&
-      (error as Record<string, unknown>)[CANCELLED_ERROR_FLAG] === true)
+    (typeof error === "object" && error !== null && (error as Record<string, unknown>)[CANCELLED_ERROR_FLAG] === true)
   );
 }
 

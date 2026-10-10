@@ -1,9 +1,9 @@
-import { act, fireEvent, type RenderHookResult, renderHook } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
-import { request } from '../../../utils/testingHelpers';
-import useRequest from '../index';
+import { act, fireEvent, type RenderHookResult, renderHook } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
+import { request } from "../../../utils/testingHelpers";
+import useRequest from "../index";
 
-describe('useRefreshOnWindowFocusPlugin', () => {
+describe("useRefreshOnWindowFocusPlugin", () => {
   vi.useFakeTimers();
 
   const setUp = <TData = string, TParams extends any[] = any[]>(
@@ -15,7 +15,7 @@ describe('useRefreshOnWindowFocusPlugin', () => {
   let hook1: RenderHookResult<any, any>;
   let hook2: RenderHookResult<any, any>;
 
-  test('useRefreshOnWindowFocusPlugin should work', async () => {
+  test("useRefreshOnWindowFocusPlugin should work", async () => {
     act(() => {
       hook = setUp(request, {
         refreshOnWindowFocus: true,
@@ -43,7 +43,7 @@ describe('useRefreshOnWindowFocusPlugin', () => {
     expect(hook.result.current.loading).toBe(true);
   });
 
-  test('fix: multiple unsubscriptions should not delete the last subscription listener ', async () => {
+  test("fix: multiple unsubscriptions should not delete the last subscription listener ", async () => {
     act(() => {
       hook1 = setUp(request, {
         refreshOnWindowFocus: true,

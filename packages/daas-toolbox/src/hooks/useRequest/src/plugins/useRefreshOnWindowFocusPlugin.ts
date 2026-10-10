@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
-import useUnmount from '../../../useUnmount';
-import type { Plugin } from '../types';
-import limit from '../utils/limit';
-import subscribeFocus from '../utils/subscribeFocus';
+import { useEffect, useRef } from "react";
+import useUnmount from "../../../useUnmount";
+import type { Plugin } from "../types";
+import limit from "../utils/limit";
+import subscribeFocus from "../utils/subscribeFocus";
 
 const useRefreshOnWindowFocusPlugin: Plugin<any, any[]> = (
   fetchInstance,

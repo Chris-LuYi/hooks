@@ -1,7 +1,7 @@
-import { act, type RenderHookResult, renderHook } from '@testing-library/react';
-import { useState } from 'react';
-import { describe, expect, test } from 'vitest';
-import useMemoizedFn from '../';
+import { act, type RenderHookResult, renderHook } from "@testing-library/react";
+import { useState } from "react";
+import { describe, expect, test } from "vitest";
+import useMemoizedFn from "../";
 
 const useCount = () => {
   const [count, setCount] = useState(0);
@@ -17,8 +17,8 @@ const useCount = () => {
 
 let hook: RenderHookResult<any, any>;
 
-describe('useMemoizedFn', () => {
-  test('useMemoizedFn should work', () => {
+describe("useMemoizedFn", () => {
+  test("useMemoizedFn should work", () => {
     act(() => {
       hook = renderHook(() => useCount());
     });

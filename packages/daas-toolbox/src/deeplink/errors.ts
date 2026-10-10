@@ -1,6 +1,6 @@
-import type { DeeplinkPhase } from './types';
+import type { DeeplinkPhase } from "./types";
 
-const TIMEOUT_ERROR_FLAG = '__DAAS_DEEPLINK_TIMEOUT_ERROR__';
+const TIMEOUT_ERROR_FLAG = "__DAAS_DEEPLINK_TIMEOUT_ERROR__";
 
 /** Rejection reason when a `deeplink.invoke` call exceeds its `timeout`. */
 export class DeeplinkTimeoutError extends Error {
@@ -16,10 +16,10 @@ export class DeeplinkTimeoutError extends Error {
   constructor(key: string, phase: DeeplinkPhase, timeout: number) {
     super(
       `[daas-toolbox] deeplink "${key}" timed out after ${timeout}ms ${
-        phase === 'waiting' ? 'waiting for a handler' : 'while its handler was running'
+        phase === "waiting" ? "waiting for a handler" : "while its handler was running"
       }`,
     );
-    this.name = 'DeeplinkTimeoutError';
+    this.name = "DeeplinkTimeoutError";
     this.key = key;
     this.phase = phase;
     this.timeout = timeout;
@@ -32,8 +32,6 @@ export class DeeplinkTimeoutError extends Error {
 export function isDeeplinkTimeoutError(error: unknown): error is DeeplinkTimeoutError {
   return (
     error instanceof DeeplinkTimeoutError ||
-    (typeof error === 'object' &&
-      error !== null &&
-      (error as Record<string, unknown>)[TIMEOUT_ERROR_FLAG] === true)
+    (typeof error === "object" && error !== null && (error as Record<string, unknown>)[TIMEOUT_ERROR_FLAG] === true)
   );
 }

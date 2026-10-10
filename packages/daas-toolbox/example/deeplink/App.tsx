@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
-import { AnalyticsMfe } from './AnalyticsMfe';
-import { AuthMfe, type AuthMfeProps } from './AuthMfe';
-import { CallerMfe } from './CallerMfe';
-import type { DeeplinkLogEntry } from './host';
-import { DeeplinkStatusPanel, installDeeplinkLogger } from './host';
-import { OrdersMfe } from './OrdersMfe';
+import { useEffect } from "react";
+import { AnalyticsMfe } from "./AnalyticsMfe";
+import { AuthMfe, type AuthMfeProps } from "./AuthMfe";
+import { CallerMfe } from "./CallerMfe";
+import type { DeeplinkLogEntry } from "./host";
+import { DeeplinkStatusPanel, installDeeplinkLogger } from "./host";
+import { OrdersMfe } from "./OrdersMfe";
 
 export interface AppProps {
-  user: AuthMfeProps['user'];
+  user: AuthMfeProps["user"];
   /** Which MFEs are mounted — lets the sample show partial chains. */
   mounted?: { auth?: boolean; analytics?: boolean; orders?: boolean };
   timeout?: number;

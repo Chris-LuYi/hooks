@@ -1,27 +1,27 @@
-import { describe, expect, test } from 'vitest';
-import * as toolbox from '../index';
+import { describe, expect, test } from "vitest";
+import * as toolbox from "../index";
 
 const exported = toolbox as Record<string, unknown>;
 
-describe('@daas/toolbox barrel', () => {
+describe("@daas/toolbox barrel", () => {
   test.each([
-    'useRequest',
-    'useHistoryTravel',
-    'useMount',
-    'useWhyDidYouUpdate',
-    'useDeeplinkHandler',
-    'clearCache',
-    'isCancelledError',
-    'CancelledError',
-    'createDeeplinkRegistry',
-    'createAppDeeplinks',
-    'DeeplinkTimeoutError',
-    'isDeeplinkTimeoutError',
-  ])('exports %s', (name) => {
-    expect(typeof exported[name]).toBe('function');
+    "useRequest",
+    "useHistoryTravel",
+    "useMount",
+    "useWhyDidYouUpdate",
+    "useDeeplinkHandler",
+    "clearCache",
+    "isCancelledError",
+    "CancelledError",
+    "createDeeplinkRegistry",
+    "createAppDeeplinks",
+    "DeeplinkTimeoutError",
+    "isDeeplinkTimeoutError",
+  ])("exports %s", (name) => {
+    expect(typeof exported[name]).toBe("function");
   });
 
-  test('exports the shared deeplink registry', () => {
+  test("exports the shared deeplink registry", () => {
     expect(exported.deeplink).toEqual({
       registerHandler: expect.any(Function),
       invoke: expect.any(Function),

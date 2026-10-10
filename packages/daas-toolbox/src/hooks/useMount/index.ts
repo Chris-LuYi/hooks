@@ -1,15 +1,13 @@
-import { type EffectCallback, useEffect } from 'react';
-import { isFunction, isThenable } from '../../utils';
-import isDev from '../../utils/isDev';
+import { type EffectCallback, useEffect } from "react";
+import { isFunction, isThenable } from "../../utils";
+import isDev from "../../utils/isDev";
 
 type MountCallback = EffectCallback | (() => Promise<void | (() => void)>);
 
 const useMount = (fn: MountCallback) => {
   if (isDev) {
     if (!isFunction(fn)) {
-      console.error(
-        `useMount: parameter \`fn\` expected to be a function, but got "${typeof fn}".`,
-      );
+      console.error(`useMount: parameter \`fn\` expected to be a function, but got "${typeof fn}".`);
     }
   }
 

@@ -1,9 +1,9 @@
-import { act, type RenderHookResult, renderHook } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
-import { request } from '../../../utils/testingHelpers';
-import useRequest from '../index';
+import { act, type RenderHookResult, renderHook } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
+import { request } from "../../../utils/testingHelpers";
+import useRequest from "../index";
 
-describe('useRetryPlugin', () => {
+describe("useRetryPlugin", () => {
   vi.useFakeTimers();
 
   const setUp = <TData = string, TParams extends any[] = any[]>(
@@ -14,7 +14,7 @@ describe('useRetryPlugin', () => {
   let hook: RenderHookResult<any, any>;
   let hook2: RenderHookResult<any, any>;
 
-  test('useRetryPlugin should work', async () => {
+  test("useRetryPlugin should work", async () => {
     let errorCallback: any;
     act(() => {
       errorCallback = vi.fn();

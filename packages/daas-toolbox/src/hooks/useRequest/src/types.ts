@@ -1,6 +1,6 @@
-import type { DependencyList } from 'react';
-import type Fetch from './Fetch';
-import type { CachedData } from './utils/cache';
+import type { DependencyList } from "react";
+import type Fetch from "./Fetch";
+import type { CachedData } from "./utils/cache";
 
 export type Service<TData, TParams extends any[]> = (...args: TParams) => Promise<TData>;
 export type Subscribe = () => void;
@@ -94,10 +94,7 @@ export interface Options<TData, TParams extends any[]> {
 }
 
 export type Plugin<TData, TParams extends any[]> = {
-  (
-    fetchInstance: Fetch<TData, TParams>,
-    options: Options<TData, TParams>,
-  ): PluginReturn<TData, TParams>;
+  (fetchInstance: Fetch<TData, TParams>, options: Options<TData, TParams>): PluginReturn<TData, TParams>;
   onInit?: (options: Options<TData, TParams>) => Partial<FetchState<TData, TParams>>;
 };
 
@@ -113,12 +110,12 @@ export interface Result<TData, TParams extends any[]> {
   data?: TData;
   error?: Error;
   params: TParams | [];
-  cancel: Fetch<TData, TParams>['cancel'];
-  refresh: Fetch<TData, TParams>['refresh'];
-  refreshAsync: Fetch<TData, TParams>['refreshAsync'];
-  run: Fetch<TData, TParams>['run'];
-  runAsync: Fetch<TData, TParams>['runAsync'];
-  mutate: Fetch<TData, TParams>['mutate'];
+  cancel: Fetch<TData, TParams>["cancel"];
+  refresh: Fetch<TData, TParams>["refresh"];
+  refreshAsync: Fetch<TData, TParams>["refreshAsync"];
+  run: Fetch<TData, TParams>["run"];
+  runAsync: Fetch<TData, TParams>["runAsync"];
+  mutate: Fetch<TData, TParams>["mutate"];
 }
 
 export type Timeout = ReturnType<typeof setTimeout>;

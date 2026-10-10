@@ -4,7 +4,6 @@
 declare const process: { env: { NODE_ENV?: string } };
 
 const isDev =
-  typeof process !== 'undefined' &&
-  (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test');
+  typeof process !== "undefined" && (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test");
 
 export default isDev;

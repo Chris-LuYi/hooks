@@ -1,6 +1,6 @@
-import { useDeeplinkHandler } from '../../src';
-import { pushTrail } from './contracts';
-import { appDeeplinks } from './deeplinks';
+import { useDeeplinkHandler } from "../../src";
+import { pushTrail } from "./contracts";
+import { appDeeplinks } from "./deeplinks";
 
 export interface AnalyticsMfeProps {
   onTrack: (key: string) => void;
@@ -13,14 +13,14 @@ export interface AnalyticsMfeProps {
 export function AnalyticsMfe({ onTrack }: AnalyticsMfeProps) {
   useDeeplinkHandler(
     appDeeplinks,
-    'orders.open',
+    "orders.open",
     async (ctx, next) => {
-      pushTrail(ctx.state, 'analytics');
+      pushTrail(ctx.state, "analytics");
       const result = await next();
       onTrack(ctx.key);
       return { ...(result as object), tracked: true };
     },
-    { owner: 'analytics', order: 150 },
+    { owner: "analytics", order: 150 },
   );
   return null;
 }

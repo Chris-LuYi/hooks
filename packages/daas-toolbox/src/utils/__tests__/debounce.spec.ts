@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { debounce, throttle } from '../debounce';
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { debounce, throttle } from "../debounce";
 
-describe('debounce', () => {
+describe("debounce", () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });
@@ -9,7 +9,7 @@ describe('debounce', () => {
     vi.useRealTimers();
   });
 
-  test('invokes once on trailing edge with latest args', () => {
+  test("invokes once on trailing edge with latest args", () => {
     const fn = vi.fn((x: number) => x);
     const d = debounce(fn, 100);
     d(1);
@@ -21,7 +21,7 @@ describe('debounce', () => {
     expect(fn).toHaveBeenLastCalledWith(3);
   });
 
-  test('leading without trailing', () => {
+  test("leading without trailing", () => {
     const fn = vi.fn();
     const d = debounce(fn, 100, { leading: true, trailing: false });
     d();
@@ -31,7 +31,7 @@ describe('debounce', () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  test('maxWait forces invocation during continuous calls', () => {
+  test("maxWait forces invocation during continuous calls", () => {
     const fn = vi.fn();
     const d = debounce(fn, 100, { maxWait: 150 });
     for (let i = 0; i < 10; i++) {
@@ -41,7 +41,7 @@ describe('debounce', () => {
     expect(fn.mock.calls.length).toBeGreaterThanOrEqual(3);
   });
 
-  test('cancel drops pending call, flush runs it now', () => {
+  test("cancel drops pending call, flush runs it now", () => {
     const fn = vi.fn((x: number) => x * 2);
     const d = debounce(fn, 100);
     d(1);
@@ -55,7 +55,7 @@ describe('debounce', () => {
     expect(d.flush()).toBe(4);
   });
 
-  test('handles system clock going backwards', () => {
+  test("handles system clock going backwards", () => {
     const fn = vi.fn();
     const d = debounce(fn, 100);
     d();
@@ -67,7 +67,7 @@ describe('debounce', () => {
   });
 });
 
-describe('throttle', () => {
+describe("throttle", () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });
@@ -75,7 +75,7 @@ describe('throttle', () => {
     vi.useRealTimers();
   });
 
-  test('leading + trailing by default', () => {
+  test("leading + trailing by default", () => {
     const fn = vi.fn();
     const t = throttle(fn, 100);
     t();
@@ -86,7 +86,7 @@ describe('throttle', () => {
     expect(fn).toHaveBeenCalledTimes(2);
   });
 
-  test('respects leading: false / trailing: false', () => {
+  test("respects leading: false / trailing: false", () => {
     const noLead = vi.fn();
     const t1 = throttle(noLead, 100, { leading: false });
     t1();

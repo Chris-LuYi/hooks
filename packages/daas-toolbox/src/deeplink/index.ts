@@ -1,4 +1,4 @@
-import { getGlobalRegistry } from './global';
+import { getGlobalRegistry } from "./global";
 
 /**
  * The page-wide deeplink registry, shared by every MFE.
@@ -12,9 +12,9 @@ import { getGlobalRegistry } from './global';
  */
 export const deeplink = getGlobalRegistry();
 
-export { DeeplinkTimeoutError, isDeeplinkTimeoutError } from './errors';
-export { createDeeplinkRegistry } from './registry';
-export { createAppDeeplinks } from './typed';
+export { DeeplinkTimeoutError, isDeeplinkTimeoutError } from "./errors";
+export { createDeeplinkRegistry } from "./registry";
+export { createAppDeeplinks } from "./typed";
 export type {
   DeeplinkCallContext,
   DeeplinkContract,
@@ -38,4 +38,4 @@ export type {
   TypedDeeplinkNext,
   TypedDeeplinkRegistry,
   UntypedDeeplinks,
-} from './types';
+} from "./types";

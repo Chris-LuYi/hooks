@@ -1,9 +1,9 @@
-import { act, type RenderHookResult, renderHook } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
-import { request } from '../../../utils/testingHelpers';
-import useRequest from '../index';
+import { act, type RenderHookResult, renderHook } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
+import { request } from "../../../utils/testingHelpers";
+import useRequest from "../index";
 
-describe('useAutoRunPlugin', () => {
+describe("useAutoRunPlugin", () => {
   vi.useFakeTimers();
 
   const setUp = <TData = string, TParams extends any[] = any[]>(
@@ -13,7 +13,7 @@ describe('useAutoRunPlugin', () => {
 
   let hook: RenderHookResult<any, any>;
 
-  test('useAutoRunPlugin ready should work', async () => {
+  test("useAutoRunPlugin ready should work", async () => {
     let dep = 1;
     act(() => {
       hook = setUp(request, {
@@ -44,7 +44,7 @@ describe('useAutoRunPlugin', () => {
     expect(hook.result.current.loading).toBe(false);
   });
 
-  test('useAutoRunPlugin manual=false ready=true work fine', async () => {
+  test("useAutoRunPlugin manual=false ready=true work fine", async () => {
     act(() => {
       hook = setUp(request, {
         ready: true,
@@ -73,7 +73,7 @@ describe('useAutoRunPlugin', () => {
     expect(hook.result.current.loading).toBe(false);
   });
 
-  test('useAutoRunPlugin manual=false ready=false work fine', async () => {
+  test("useAutoRunPlugin manual=false ready=false work fine", async () => {
     act(() => {
       hook = setUp(request, {
         ready: false,
@@ -98,7 +98,7 @@ describe('useAutoRunPlugin', () => {
     expect(hook.result.current.loading).toBe(false);
   });
 
-  test('useAutoRunPlugin manual=false ready&defaultParams work fine', async () => {
+  test("useAutoRunPlugin manual=false ready&defaultParams work fine", async () => {
     act(() => {
       hook = setUp<string, [number]>(request, {
         ready: false,
@@ -137,7 +137,7 @@ describe('useAutoRunPlugin', () => {
     expect(hook.result.current.params).toEqual([3]);
   });
 
-  test('useAutoRunPlugin manual=true ready work fine', async () => {
+  test("useAutoRunPlugin manual=true ready work fine", async () => {
     act(() => {
       hook = setUp(request, {
         ready: false,
@@ -166,7 +166,7 @@ describe('useAutoRunPlugin', () => {
     expect(hook.result.current.loading).toBe(false);
   });
 
-  test('useAutoRunPlugin manual=false refreshDeps should work', async () => {
+  test("useAutoRunPlugin manual=false refreshDeps should work", async () => {
     let dep = 1;
     act(() => {
       hook = setUp(request, {
@@ -197,7 +197,7 @@ describe('useAutoRunPlugin', () => {
     expect(hook.result.current.loading).toBe(false);
   });
 
-  test('useAutoRunPlugin manual=true refreshDeps should work', async () => {
+  test("useAutoRunPlugin manual=true refreshDeps should work", async () => {
     let dep = 1;
     act(() => {
       hook = setUp(request, {
@@ -215,7 +215,7 @@ describe('useAutoRunPlugin', () => {
     expect(hook.result.current.loading).toBe(false);
   });
 
-  test('useAutoRunPlugin refreshDepsAction should work', async () => {
+  test("useAutoRunPlugin refreshDepsAction should work", async () => {
     let dep = 1;
     let count = 0;
     const refreshDepsAction = () => {
@@ -258,13 +258,13 @@ describe('useAutoRunPlugin', () => {
     expect(count).toBe(2);
   });
 
-  test('useAutoRunPlugin ready & refreshDeps change same time work fine', async () => {
+  test("useAutoRunPlugin ready & refreshDeps change same time work fine", async () => {
     const fn = vi.fn();
 
     const asyncFn = () => {
       return new Promise<string>((resolve) => {
         fn();
-        return resolve('success');
+        return resolve("success");
       });
     };
 

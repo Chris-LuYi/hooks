@@ -1,9 +1,9 @@
-import { act, renderHook } from '@testing-library/react';
-import { useState } from 'react';
-import { describe, expect, test } from 'vitest';
-import useCreation from '../index';
+import { act, renderHook } from "@testing-library/react";
+import { useState } from "react";
+import { describe, expect, test } from "vitest";
+import useCreation from "../index";
 
-describe('useCreation', () => {
+describe("useCreation", () => {
   class Foo {
     constructor() {
       this.data = Math.random();
@@ -25,7 +25,7 @@ describe('useCreation', () => {
       };
     });
 
-  test('should work', () => {
+  test("should work", () => {
     const hook = setUp();
     const { foo } = hook.result.current;
     act(() => {

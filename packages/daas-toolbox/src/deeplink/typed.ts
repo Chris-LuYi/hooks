@@ -1,11 +1,11 @@
-import { getGlobalRegistry } from './global';
+import { getGlobalRegistry } from "./global";
 import type {
   DeeplinkContractMap,
   DeeplinkHandler,
   DeeplinkRegistry,
   TypedDeeplinkRegistry,
   UntypedDeeplinks,
-} from './types';
+} from "./types";
 
 /** One facade per registry, so `createAppDeeplinks()` is identity-stable (safe in render and hook deps). */
 const facades = new WeakMap<DeeplinkRegistry, TypedDeeplinkRegistry<UntypedDeeplinks>>();
@@ -29,8 +29,7 @@ export function createAppDeeplinks<M extends DeeplinkContractMap<M> = UntypedDee
       // Contract types exist only at compile time; typed and untyped handlers are identical at runtime.
       registerHandler: (key, handler, options) =>
         registry.registerHandler(key, handler as unknown as DeeplinkHandler, options),
-      invoke: (key, params, options) =>
-        registry.invoke(key, params as Record<string, unknown> | undefined, options),
+      invoke: (key, params, options) => registry.invoke(key, params as Record<string, unknown> | undefined, options),
       has: (key) => registry.has(key),
       registerGlobalHandler: (handler, options) => registry.registerGlobalHandler(handler, options),
       inspect: () => registry.inspect(),

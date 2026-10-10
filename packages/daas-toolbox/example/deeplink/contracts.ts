@@ -4,12 +4,12 @@
  */
 export interface AppDeeplinks {
   /** Open an order. The caller sends the id; the chain returns what was opened. */
-  'orders.open': { params: { orderId: string }; result: OrderOpenResult };
+  "orders.open": { params: { orderId: string }; result: OrderOpenResult };
 }
 
 export interface OrderOpenResult {
   orderId: string;
-  status: 'opened';
+  status: "opened";
   /** Added by the auth MFE on the way in. */
   viewer: string;
   /** Added by the analytics MFE on the way out. */

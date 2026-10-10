@@ -1,16 +1,14 @@
-import { act, render, renderHook } from '@testing-library/react';
-import { useState } from 'react';
-import { describe, expect, test, vi } from 'vitest';
-import { request } from '../../../utils/testingHelpers';
-import useRequest, { clearCache } from '../index';
+import { act, render, renderHook } from "@testing-library/react";
+import { useState } from "react";
+import { describe, expect, test, vi } from "vitest";
+import { request } from "../../../utils/testingHelpers";
+import useRequest, { clearCache } from "../index";
 
-describe('useCachePlugin', () => {
+describe("useCachePlugin", () => {
   vi.useFakeTimers();
 
-  const setup = (
-    service: Parameters<typeof useRequest>[0],
-    options: Parameters<typeof useRequest>[1],
-  ) => renderHook(() => useRequest(service, options));
+  const setup = (service: Parameters<typeof useRequest>[0], options: Parameters<typeof useRequest>[1]) =>
+    renderHook(() => useRequest(service, options));
 
   const testCacheKey = async (options: any) => {
     const hook = setup(request, options);
@@ -19,52 +17,52 @@ describe('useCachePlugin', () => {
       vi.advanceTimersByTime(1000);
     });
     expect(hook.result.current.loading).toBe(false);
-    expect(hook.result.current.data).toBe('success');
+    expect(hook.result.current.data).toBe("success");
     hook.unmount();
   };
 
-  test('useRequest cacheKey should work', async () => {
+  test("useRequest cacheKey should work", async () => {
     await testCacheKey({
-      cacheKey: 'testCacheKey',
+      cacheKey: "testCacheKey",
     });
 
     vi.advanceTimersByTime(100);
 
     const hook2 = setup(request, {
-      cacheKey: 'testCacheKey',
+      cacheKey: "testCacheKey",
     });
     expect(hook2.result.current.loading).toBe(true);
-    expect(hook2.result.current.data).toBe('success');
+    expect(hook2.result.current.data).toBe("success");
     await act(async () => {
       vi.advanceTimersByTime(1000);
     });
     expect(hook2.result.current.loading).toBe(false);
   });
 
-  test('useRequest staleTime should work', async () => {
+  test("useRequest staleTime should work", async () => {
     await testCacheKey({
-      cacheKey: 'testStaleTime',
+      cacheKey: "testStaleTime",
       staleTime: 3000,
     });
 
     vi.advanceTimersByTime(1000);
 
     const hook2 = setup(request, {
-      cacheKey: 'testStaleTime',
+      cacheKey: "testStaleTime",
       staleTime: 3000,
     });
     expect(hook2.result.current.loading).toBe(false);
-    expect(hook2.result.current.data).toBe('success');
+    expect(hook2.result.current.data).toBe("success");
     hook2.unmount();
 
     vi.advanceTimersByTime(3001);
 
     const hook3 = setup(request, {
-      cacheKey: 'testStaleTime',
+      cacheKey: "testStaleTime",
       staleTime: 3000,
     });
     expect(hook3.result.current.loading).toBe(true);
-    expect(hook3.result.current.data).toBe('success');
+    expect(hook3.result.current.data).toBe("success");
 
     await act(async () => {
       vi.advanceTimersByTime(1000);
@@ -72,26 +70,26 @@ describe('useCachePlugin', () => {
     expect(hook3.result.current.loading).toBe(false);
   });
 
-  test('useRequest cacheTime should work', async () => {
+  test("useRequest cacheTime should work", async () => {
     await testCacheKey({
-      cacheKey: 'testCacheTime',
+      cacheKey: "testCacheTime",
       cacheTime: 5000,
     });
 
     vi.advanceTimersByTime(1000);
 
     const hook2 = setup(request, {
-      cacheKey: 'testCacheTime',
+      cacheKey: "testCacheTime",
       cacheTime: 5000,
     });
     expect(hook2.result.current.loading).toBe(true);
-    expect(hook2.result.current.data).toBe('success');
+    expect(hook2.result.current.data).toBe("success");
     hook2.unmount();
 
     vi.advanceTimersByTime(5001);
 
     const hook3 = setup(request, {
-      cacheKey: 'testCacheTime',
+      cacheKey: "testCacheTime",
       cacheTime: 5000,
     });
     expect(hook3.result.current.loading).toBe(true);
@@ -101,22 +99,22 @@ describe('useCachePlugin', () => {
       vi.advanceTimersByTime(1000);
     });
     expect(hook3.result.current.loading).toBe(false);
-    expect(hook3.result.current.data).toBe('success');
+    expect(hook3.result.current.data).toBe("success");
   });
 
-  test('clearCache should work', async () => {
-    await testCacheKey('testClearCache');
+  test("clearCache should work", async () => {
+    await testCacheKey("testClearCache");
 
-    clearCache('testClearCache');
+    clearCache("testClearCache");
     const hook2 = setup(request, {
-      cacheKey: 'testClearCache',
+      cacheKey: "testClearCache",
     });
     expect(hook2.result.current.loading).toBe(true);
     expect(hook2.result.current.data).toBeUndefined();
   });
 
-  test('clearCache/setCache should work', async () => {
-    const cacheKey = 'testClearCacheSetCache';
+  test("clearCache/setCache should work", async () => {
+    const cacheKey = "testClearCacheSetCache";
     const options = {
       cacheKey,
       cacheTime: 3000,
@@ -134,33 +132,33 @@ describe('useCachePlugin', () => {
       vi.advanceTimersByTime(1000);
     });
     expect(hook2.result.current.loading).toBe(false);
-    expect(hook2.result.current.data).toBe('success');
+    expect(hook2.result.current.data).toBe("success");
     hook2.unmount();
 
     vi.advanceTimersByTime(2000);
 
     const hook3 = setup(request, options);
     expect(hook3.result.current.loading).toBe(true);
-    expect(hook3.result.current.data).toBe('success');
+    expect(hook3.result.current.data).toBe("success");
     hook3.unmount();
   });
 
-  test('setCache/getCache should work', async () => {
+  test("setCache/getCache should work", async () => {
     const cacheKey = `setCacheKey`;
     await testCacheKey({
       cacheKey,
       setCache: (data: JSON) => localStorage.setItem(cacheKey, JSON.stringify(data)),
-      getCache: () => JSON.parse(localStorage.getItem(cacheKey) || '{}'),
+      getCache: () => JSON.parse(localStorage.getItem(cacheKey) || "{}"),
     });
 
     vi.advanceTimersByTime(1000);
     const hook2 = setup(request, {
       cacheKey,
       setCache: (data) => localStorage.setItem(cacheKey, JSON.stringify(data)),
-      getCache: () => JSON.parse(localStorage.getItem(cacheKey) || '{}'),
+      getCache: () => JSON.parse(localStorage.getItem(cacheKey) || "{}"),
     });
     expect(hook2.result.current.loading).toBe(true);
-    expect(hook2.result.current.data).toBe('success');
+    expect(hook2.result.current.data).toBe("success");
 
     await act(async () => {
       vi.advanceTimersByTime(1000);
@@ -168,9 +166,9 @@ describe('useCachePlugin', () => {
     expect(hook2.result.current.loading).toBe(false);
   });
 
-  test('cache should work when change data immediately', async () => {
+  test("cache should work when change data immediately", async () => {
     const { result } = setup(request, {
-      cacheKey: 'mutateCacheKey',
+      cacheKey: "mutateCacheKey",
     });
     act(() => {
       result.current.mutate(1);
@@ -180,12 +178,12 @@ describe('useCachePlugin', () => {
       vi.advanceTimersByTime(1000);
     });
     expect(result.current.loading).toBe(false);
-    expect(result.current.data).toBe('success');
+    expect(result.current.data).toBe("success");
   });
 
   //github.com/alibaba/hooks/issues/1859
-  test('error should reset with activeKey', async () => {
-    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  test("error should reset with activeKey", async () => {
+    const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     let res = {} as any;
     const TestComponent = () => {

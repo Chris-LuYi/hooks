@@ -1,9 +1,9 @@
-import { act, type RenderHookResult, renderHook } from '@testing-library/react';
-import { afterEach, describe, expect, test, vi } from 'vitest';
-import { request } from '../../../utils/testingHelpers';
-import useRequest from '../index';
+import { act, type RenderHookResult, renderHook } from "@testing-library/react";
+import { afterEach, describe, expect, test, vi } from "vitest";
+import { request } from "../../../utils/testingHelpers";
+import useRequest from "../index";
 
-describe('useLoadingDelayPlugin', () => {
+describe("useLoadingDelayPlugin", () => {
   vi.useFakeTimers();
 
   const setUp = <TData = string, TParams extends any[] = any[]>(
@@ -17,7 +17,7 @@ describe('useLoadingDelayPlugin', () => {
     hook.unmount();
   });
 
-  test('useLoadingDelayPlugin should work', async () => {
+  test("useLoadingDelayPlugin should work", async () => {
     act(() => {
       hook = setUp(request, {
         loadingDelay: 2000,
@@ -48,7 +48,7 @@ describe('useLoadingDelayPlugin', () => {
     expect(hook.result.current.loading).toBe(false);
   });
 
-  test('useLoadingDelayPlugin should no update loading when ready is false', async () => {
+  test("useLoadingDelayPlugin should no update loading when ready is false", async () => {
     act(() => {
       hook = setUp(request, {
         loadingDelay: 2000,
@@ -64,7 +64,7 @@ describe('useLoadingDelayPlugin', () => {
     expect(hook.result.current.loading).toBe(false);
   });
 
-  test('useLoadingDelayPlugin should update loading when ready is undefined', async () => {
+  test("useLoadingDelayPlugin should update loading when ready is undefined", async () => {
     act(() => {
       hook = setUp(request, {
         loadingDelay: 2000,

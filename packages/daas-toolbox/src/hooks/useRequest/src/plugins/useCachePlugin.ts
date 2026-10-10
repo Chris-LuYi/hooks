@@ -1,21 +1,15 @@
-import { useRef } from 'react';
-import useCreation from '../../../useCreation';
-import useUnmount from '../../../useUnmount';
-import type { Plugin } from '../types';
-import type { CachedData } from '../utils/cache';
-import { getCache, setCache } from '../utils/cache';
-import { getCachePromise, setCachePromise } from '../utils/cachePromise';
-import { subscribe, trigger } from '../utils/cacheSubscribe';
+import { useRef } from "react";
+import useCreation from "../../../useCreation";
+import useUnmount from "../../../useUnmount";
+import type { Plugin } from "../types";
+import type { CachedData } from "../utils/cache";
+import { getCache, setCache } from "../utils/cache";
+import { getCachePromise, setCachePromise } from "../utils/cachePromise";
+import { subscribe, trigger } from "../utils/cacheSubscribe";
 
 const useCachePlugin: Plugin<any, any[]> = (
   fetchInstance,
-  {
-    cacheKey,
-    cacheTime = 5 * 60 * 1000,
-    staleTime = 0,
-    setCache: customSetCache,
-    getCache: customGetCache,
-  },
+  { cacheKey, cacheTime = 5 * 60 * 1000, staleTime = 0, setCache: customSetCache, getCache: customGetCache },
 ) => {
   const unSubscribeRef = useRef<() => void>(undefined);
 
@@ -44,7 +38,7 @@ const useCachePlugin: Plugin<any, any[]> = (
 
     // get data from cache when init
     const cacheData = _getCache(cacheKey);
-    if (cacheData && Object.hasOwn(cacheData, 'data')) {
+    if (cacheData && Object.hasOwn(cacheData, "data")) {
       fetchInstance.state.data = cacheData.data;
       fetchInstance.state.params = cacheData.params;
       if (staleTime === -1 || Date.now() - cacheData.time <= staleTime) {
@@ -70,7 +64,7 @@ const useCachePlugin: Plugin<any, any[]> = (
     onBefore: (params) => {
       const cacheData = _getCache(cacheKey, params);
 
-      if (!cacheData || !Object.hasOwn(cacheData, 'data')) {
+      if (!cacheData || !Object.hasOwn(cacheData, "data")) {
         return {};
       }
 

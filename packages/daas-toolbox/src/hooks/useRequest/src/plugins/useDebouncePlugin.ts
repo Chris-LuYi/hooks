@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef } from 'react';
-import useUpdateEffect from '../../../useUpdateEffect';
-import type { DebouncedFunc, DebounceSettings } from '../../../../utils/debounce';
-import { debounce } from '../../../../utils/debounce';
-import type { Plugin } from '../types';
-import { cancelPendingPromise } from '../utils/cancelledError';
+import { useEffect, useMemo, useRef } from "react";
+import type { DebouncedFunc, DebounceSettings } from "../../../../utils/debounce";
+import { debounce } from "../../../../utils/debounce";
+import useUpdateEffect from "../../../useUpdateEffect";
+import type { Plugin } from "../types";
+import { cancelPendingPromise } from "../utils/cancelledError";
 
 const useDebouncePlugin: Plugin<any, any[]> = (
   fetchInstance,

@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
-import useMemoizedFn from '../useMemoizedFn';
-import { isNumber } from '../../utils';
+import { useRef, useState } from "react";
+import { isNumber } from "../../utils";
+import useMemoizedFn from "../useMemoizedFn";
 
 interface IData<T> {
   present?: T;

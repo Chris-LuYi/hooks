@@ -1,5 +1,5 @@
-import isBrowser from '../../../../utils/isBrowser';
-import isDocumentVisible from './isDocumentVisible';
+import isBrowser from "../../../../utils/isBrowser";
+import isDocumentVisible from "./isDocumentVisible";
 
 type Listener = () => void;
 
@@ -17,7 +17,7 @@ if (isBrowser) {
     if (!isDocumentVisible()) return;
     listeners.forEach((listener) => listener());
   };
-  window.addEventListener('visibilitychange', revalidate, false);
+  window.addEventListener("visibilitychange", revalidate, false);
 }
 
 export default subscribe;

@@ -1,5 +1,5 @@
-import type { MutableRefObject } from 'react';
-import { useRef } from 'react';
+import type { MutableRefObject } from "react";
+import { useRef } from "react";
 
 function useLatest<T>(value: T): MutableRefObject<T> {
   const ref = useRef(value);

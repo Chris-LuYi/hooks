@@ -1,9 +1,9 @@
-import { renderHook } from '@testing-library/react';
-import { describe, expect, test } from 'vitest';
-import useUpdateEffect from '../index';
+import { renderHook } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
+import useUpdateEffect from "../index";
 
-describe('useUpdateEffect', () => {
-  test('test on mounted', async () => {
+describe("useUpdateEffect", () => {
+  test("test on mounted", async () => {
     let mountedState = 1;
     const hook = renderHook(() =>
       useUpdateEffect(() => {
@@ -14,7 +14,7 @@ describe('useUpdateEffect', () => {
     hook.rerender();
     expect(mountedState).toBe(2);
   });
-  test('test on optional', () => {
+  test("test on optional", () => {
     let mountedState = 1;
     const hook = renderHook(() =>
       useUpdateEffect(() => {

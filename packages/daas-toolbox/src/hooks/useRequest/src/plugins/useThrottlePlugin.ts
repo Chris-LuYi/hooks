@@ -1,13 +1,10 @@
-import { useEffect, useRef } from 'react';
-import type { DebouncedFunc, ThrottleSettings } from '../../../../utils/debounce';
-import { throttle } from '../../../../utils/debounce';
-import type { Plugin } from '../types';
-import { cancelPendingPromise } from '../utils/cancelledError';
+import { useEffect, useRef } from "react";
+import type { DebouncedFunc, ThrottleSettings } from "../../../../utils/debounce";
+import { throttle } from "../../../../utils/debounce";
+import type { Plugin } from "../types";
+import { cancelPendingPromise } from "../utils/cancelledError";
 
-const useThrottlePlugin: Plugin<any, any[]> = (
-  fetchInstance,
-  { throttleWait, throttleLeading, throttleTrailing },
-) => {
+const useThrottlePlugin: Plugin<any, any[]> = (fetchInstance, { throttleWait, throttleLeading, throttleTrailing }) => {
   const throttledRef = useRef<DebouncedFunc<any>>(undefined);
   const pendingRejectRef = useRef<(reason?: unknown) => void>(undefined);
 

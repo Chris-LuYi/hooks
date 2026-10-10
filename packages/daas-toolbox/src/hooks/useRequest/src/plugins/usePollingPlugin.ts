@@ -1,8 +1,8 @@
-import { useRef } from 'react';
-import useUpdateEffect from '../../../useUpdateEffect';
-import type { Plugin, Timeout } from '../types';
-import isDocumentVisible from '../utils/isDocumentVisible';
-import subscribeReVisible from '../utils/subscribeReVisible';
+import { useRef } from "react";
+import useUpdateEffect from "../../../useUpdateEffect";
+import type { Plugin, Timeout } from "../types";
+import isDocumentVisible from "../utils/isDocumentVisible";
+import subscribeReVisible from "../utils/subscribeReVisible";
 
 const usePollingPlugin: Plugin<any, any[]> = (
   fetchInstance,
