@@ -11,7 +11,7 @@ export default defineConfig({
   test: {
     reporters: ['default', 'verbose'],
     environment: 'jsdom',
-    include: ['src/**/__tests__/*.spec.ts?(x)'],
+    include: ['src/**/__tests__/*.spec.ts?(x)', 'example/**/__tests__/*.spec.ts?(x)'],
     coverage: {
       provider: 'istanbul',
       include: ['src/**/*.ts'],

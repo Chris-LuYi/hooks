@@ -28,6 +28,9 @@ Differences from upstream ahooks: `lodash/debounce` and `lodash/throttle` are re
 
 ## Deeplink handler chains
 
+> Full guide: [`docs/deeplink-guide.md`](docs/deeplink-guide.md). Runnable sample (host + 4 MFEs,
+> tested end to end): [`example/deeplink/`](example/deeplink/).
+
 Several MFEs can register **handlers** on the same deeplink key. A call runs them as an onion:
 each handler can change the payload on the way in (`next(ctx)`) and the result on the way out,
 and the caller receives the final value. Keys match the `deeplink` string used by daas-sdk
@@ -163,7 +166,7 @@ handler can't know its position in the chain. Types are checked at build time, n
 
 ## Copying into an SDK
 
-Copy `src/` and `LICENSE` (required by ahooks' MIT license). You can skip `**/__tests__/`
+Copy `src/` and `LICENSE` (required by ahooks' MIT license). You can skip `example/`, `**/__tests__/`
 and `src/utils/testingHelpers.ts`. The target tsconfig needs `strict`-compatible settings and
 the `DOM` lib.
 
