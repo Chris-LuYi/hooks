@@ -168,9 +168,12 @@ handler can't know its position in the chain. Types are checked at build time, n
 
 ## Copying into an SDK
 
-Copy `src/` and `LICENSE` (required by ahooks' MIT license). You can skip `example/`, `**/__tests__/`
-and `src/utils/testingHelpers.ts`. The target tsconfig needs `strict`-compatible settings and
-the `DOM` lib.
+Copy `src/` and `THIRD_PARTY_NOTICES.md`. The notices file is required by the MIT licenses of
+ahooks and lodash: keep it next to the copied code and include it in the SDK's published package
+or its combined third-party notices, because bundlers strip license comments.
+
+You can skip `example/`, `**/__tests__/` and `src/utils/testingHelpers.ts`. The target tsconfig
+needs `strict`-compatible settings and the `DOM` lib.
 
 ## Checks
 
