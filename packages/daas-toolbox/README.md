@@ -17,11 +17,13 @@ src/
 | `useRequest` | All built-in plugins (auto-run, cache, debounce, throttle, polling, retry, loading delay, refresh on focus). Also exports `clearCache`, `CancelledError`, `isCancelledError`. |
 | `useHistoryTravel` | |
 | `useMount` | |
+| `usePrevious` | Also exports the `ShouldUpdateFunc` type. |
+| `useCreation` | |
 | `useWhyDidYouUpdate` | |
 | `useDeeplinkHandler` | Registers a deeplink handler for the component's lifetime (see below). |
 
-Internal helpers (`useMemoizedFn`, `useLatest`, `useUpdate`, `useUnmount`, `useCreation`,
-`useUpdateEffect`, `createUpdateEffect`) are kept because the hooks above depend on them.
+Internal helpers (`useMemoizedFn`, `useLatest`, `useUpdate`, `useUnmount`, `useUpdateEffect`,
+`createUpdateEffect`) are kept because the hooks above depend on them.
 
 Differences from upstream ahooks: `lodash/debounce` and `lodash/throttle` are replaced by
 `src/utils/debounce.ts`, and `src/utils/isDev.ts` no longer needs `@types/node`.

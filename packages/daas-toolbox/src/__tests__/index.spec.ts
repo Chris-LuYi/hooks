@@ -10,6 +10,8 @@ describe("@daas/toolbox barrel", () => {
     "useMount",
     "useWhyDidYouUpdate",
     "useDeeplinkHandler",
+    "usePrevious",
+    "useCreation",
     "clearCache",
     "isCancelledError",
     "CancelledError",
