@@ -10,7 +10,8 @@
   "scripts": {
     "test": "vitest run --color",
     "test:cov": "vitest run --color --coverage",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "check:clean": "node scripts/check-clean.mjs"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
