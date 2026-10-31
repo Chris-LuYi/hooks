@@ -1,5 +1,5 @@
 {
-  "name": "@daas/toolbox",
+  "name": "@daas-sdk/toolbox",
   "version": "0.1.0",
   "private": true,
   "description": "DaaS toolbox: vendored ahooks 3.11.0 subset (useRequest, useHistoryTravel, useMount, useWhyDidYouUpdate) plus a cross-MFE deeplink handler registry. No runtime dependencies besides React.",

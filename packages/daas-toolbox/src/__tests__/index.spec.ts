@@ -3,7 +3,7 @@ import * as toolbox from "../index";
 
 const exported = toolbox as Record<string, unknown>;
 
-describe("@daas/toolbox barrel", () => {
+describe("@daas-sdk/toolbox barrel", () => {
   test.each([
     "useRequest",
     "useHistoryTravel",
