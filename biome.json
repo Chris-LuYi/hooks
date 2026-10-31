@@ -43,5 +43,37 @@
     "linter": {
       "enabled": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["packages/daas-toolbox/**"],
+      "formatter": {
+        "lineWidth": 120
+      },
+      "javascript": {
+        "formatter": {
+          "quoteStyle": "double",
+          "semicolons": "always",
+          "trailingCommas": "all"
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/daas-toolbox/src/hooks/**",
+        "!packages/daas-toolbox/src/hooks/useDeeplinkHandler/**"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConfusingVoidType": "off",
+            "useIterableCallbackReturn": "off"
+          },
+          "correctness": {
+            "useExhaustiveDependencies": "off"
+          }
+        }
+      }
+    }
+  ]
 }
