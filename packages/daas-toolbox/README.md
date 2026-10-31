@@ -1,4 +1,4 @@
-# @daas/toolbox
+# @daas-sdk/toolbox
 
 DaaS toolbox: pure TypeScript source, copied by hand into the SDK. Not published to npm.
 No runtime dependencies besides `react` (≥16.8).
@@ -178,6 +178,6 @@ needs `strict`-compatible settings and the `DOM` lib.
 ## Checks
 
 ```bash
-pnpm --filter @daas/toolbox tsc
-pnpm --filter @daas/toolbox test
+pnpm --filter @daas-sdk/toolbox tsc
+pnpm --filter @daas-sdk/toolbox test
 ```

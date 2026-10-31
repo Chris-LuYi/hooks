@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Rename the vendored `@daas/hooks` package to `@daas/toolbox`, with the hooks in one folder, and add a cross-MFE deeplink handler registry (`deeplink.handle` / `deeplink.invoke` / `useDeeplinkHandler`) that returns handler results as Promises.
+**Goal:** Rename the vendored `@daas/hooks` package to `@daas-sdk/toolbox`, with the hooks in one folder, and add a cross-MFE deeplink handler registry (`deeplink.handle` / `deeplink.invoke` / `useDeeplinkHandler`) that returns handler results as Promises.
 
 **Architecture:** `createDeeplinkRegistry()` is a pure factory that holds a `Map` of handler registrations and a per-key queue of waiting calls. Each call has one timeout budget and an `AbortController`. A shared instance lives on `globalThis[Symbol.for('daas-toolbox/deeplink')]`, so every MFE (and every bundled copy of the toolbox) sees one registry. `useDeeplinkHandler` is a thin React wrapper that registers once per key and always calls the latest handler.
 
@@ -37,7 +37,7 @@
 
 ```
 packages/daas-toolbox/
-  package.json                          name "@daas/toolbox"
+  package.json                          name "@daas-sdk/toolbox"
   README.md                             rewritten in Task 7
   docs/specs/…-design.md, docs/plans/…  (moved by Task 1)
   src/
@@ -113,7 +113,7 @@ import * as toolbox from '../index';
 
 const exported = toolbox as Record<string, unknown>;
 
-describe('@daas/toolbox barrel', () => {
+describe('@daas-sdk/toolbox barrel', () => {
   test.each([
     'useRequest',
     'useHistoryTravel',
@@ -157,7 +157,7 @@ export * from './hooks';
 - [ ] **Step 7: Rename the package.** In `package.json`, change these two fields (leave the others as they are):
 
 ```json
-  "name": "@daas/toolbox",
+  "name": "@daas-sdk/toolbox",
   "description": "DaaS toolbox: vendored ahooks 3.10.1 subset (useRequest, useHistoryTravel, useMount, useWhyDidYouUpdate) plus a cross-MFE deeplink handler registry. No runtime dependencies besides React.",
 ```
 
@@ -178,7 +178,7 @@ Expected: tsc exits 0. All test files pass: the 20 existing files (84 tests) plu
 ```bash
 cd <repo-root>
 git add -A packages/daas-toolbox packages/daas-hooks pnpm-lock.yaml
-git commit -m "refactor(daas-toolbox): rename daas-hooks to @daas/toolbox and move hooks into src/hooks"
+git commit -m "refactor(daas-toolbox): rename daas-hooks to @daas-sdk/toolbox and move hooks into src/hooks"
 ```
 
 ---
@@ -1443,7 +1443,7 @@ git commit -m "feat(daas-toolbox): useDeeplinkHandler hook"
 
 **Interfaces:**
 - Consumes: everything exported by `src/deeplink/index.ts` and `src/hooks/index.ts`.
-- Produces: the final public surface of `@daas/toolbox`.
+- Produces: the final public surface of `@daas-sdk/toolbox`.
 
 - [ ] **Step 1: Extend the barrel test.** Replace `src/__tests__/index.spec.ts` with:
 
@@ -1453,7 +1453,7 @@ import * as toolbox from '../index';
 
 const exported = toolbox as Record<string, unknown>;
 
-describe('@daas/toolbox barrel', () => {
+describe('@daas-sdk/toolbox barrel', () => {
   test.each([
     'useRequest',
     'useHistoryTravel',
@@ -1495,7 +1495,7 @@ export * from './hooks';
 - [ ] **Step 4: Replace `README.md`**
 
 ````markdown
-# @daas/toolbox
+# @daas-sdk/toolbox
 
 DaaS toolbox: pure TypeScript source, copied by hand into the SDK. Not published to npm.
 No runtime dependencies besides `react` (≥16.8).
@@ -1572,8 +1572,8 @@ the `DOM` lib.
 ## Checks
 
 ```bash
-pnpm --filter @daas/toolbox tsc
-pnpm --filter @daas/toolbox test
+pnpm --filter @daas-sdk/toolbox tsc
+pnpm --filter @daas-sdk/toolbox test
 ```
 ````
 

@@ -6,7 +6,7 @@
 
 ## 1. Goal
 
-1. Rename the vendored hooks package `@daas/hooks` to `@daas/toolbox`, a general toolbox where the
+1. Rename the vendored hooks package `@daas/hooks` to `@daas-sdk/toolbox`, a general toolbox where the
    hooks are one folder among other utilities.
 2. Add a **deeplink handler registry**. Any MFE can register an async handler for a deeplink key,
    and any other MFE can invoke that key and get the handler's result back as a Promise.
@@ -45,7 +45,7 @@
 ## 2. Package structure
 
 ```
-packages/daas-toolbox/              (git mv from packages/daas-hooks; name "@daas/toolbox")
+packages/daas-toolbox/              (git mv from packages/daas-hooks; name "@daas-sdk/toolbox")
   LICENSE                           ahooks MIT license (kept)
   README.md
   docs/specs/                       this file
@@ -242,7 +242,7 @@ timers are used for every timeout case. Coverage target: **100%** for `src/deepl
 ## 6. Rename / migration steps
 
 1. `git mv packages/daas-hooks packages/daas-toolbox`, and set `package.json` `name` to
-   `@daas/toolbox`.
+   `@daas-sdk/toolbox`.
 2. Move the hook folders into `src/hooks/`, and fix their `utils` imports (`../utils` →
    `../../utils`, and `../../../utils` → `../../../../utils` inside `useRequest/src/**`).
 3. Rewrite `src/index.ts` to re-export the hooks, `deeplink`, `createDeeplinkRegistry`, the errors

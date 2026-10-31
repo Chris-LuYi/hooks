@@ -1,6 +1,6 @@
 # Third-party notices
 
-`@daas/toolbox` contains code copied or ported from the open-source projects below. Keep this
+`@daas-sdk/toolbox` contains code copied or ported from the open-source projects below. Keep this
 file with the code wherever it is copied, and ship it with any SDK build that includes that code.
 The MIT license requires the copyright and permission notices to accompany every copy.
 
