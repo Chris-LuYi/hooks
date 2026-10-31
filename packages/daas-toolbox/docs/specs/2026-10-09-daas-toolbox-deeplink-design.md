@@ -13,7 +13,7 @@
 
 ### Context
 
-- The DaaS ecosystem (`@chrisluyi/daas-sdk`) already has deeplinks: a string key that resolves
+- The DaaS ecosystem (the DaaS SDK) already has deeplinks: a string key that resolves
   through the deeplink registry to a `daas` route and/or host-registered `targets`. Its
   `navigate(deeplink, params?, options?)` returns `void` (fire-and-forget), and its
   `deeplinkTargets` handlers are host-only and keyed by target type.
@@ -27,7 +27,7 @@
 
 | Topic | Decision |
 | --- | --- |
-| Location | `daas-toolbox`, standalone. It does **not** import `@chrisluyi/daas-sdk`. |
+| Location | `daas-toolbox`, standalone. It does **not** import the DaaS SDK. |
 | Call shape | Mirrors `navigate`: `(deeplink: string, params?: Record<string, unknown>, options?)` |
 | Handler not registered yet | The call waits in a queue, with a timeout |
 | Duplicate registration | **Replace**: the latest registration wins and the previous one is dropped for good |

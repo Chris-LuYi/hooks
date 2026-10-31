@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- No new runtime dependencies. `react` stays the only runtime import, and nothing imports `@chrisluyi/daas-sdk`.
+- No new runtime dependencies. `react` stays the only runtime import, and nothing imports the DaaS SDK.
 - Public names: `registerHandler(key, handler, options)`, `registerGlobalHandler(handler, options)`, `invoke`, `has`, `inspect`, `subscribe`; `useDeeplinkHandler(key, handler, options)`; types `DeeplinkHandler`, `DeeplinkNext`, `DeeplinkCallContext`, `DeeplinkStepInfo`, `DeeplinkRegisterOptions`, `DeeplinkStepStatus`, `DeeplinkStatus`, `DeeplinkInspection`, `TypedDeeplinkCallContext`, `TypedDeeplinkNext`, `TypedDeeplinkHandler`.
 - `options.owner` is **required** (a non-empty string) for `registerHandler`, `registerGlobalHandler` and the hook.
 - All messages start with `[daas-toolbox]`. Exact texts:
@@ -67,7 +67,7 @@ packages/daas-toolbox/src/
 packages/daas-toolbox/README.md                     deeplink section rewritten (Task 5)
 ```
 
-All commands run from `/home/chris/Github/hooks/packages/daas-toolbox` unless stated otherwise.
+All commands run from `<repo-root>/packages/daas-toolbox` unless stated otherwise.
 
 ---
 
@@ -2071,7 +2071,7 @@ describe('createAppDeeplinks (types, checked by tsc)', () => {
 - [ ] **Step 12: Edit the global-singleton and barrel tests for the new name**
 
 ```bash
-cd /home/chris/Github/hooks/packages/daas-toolbox
+cd <repo-root>/packages/daas-toolbox
 python3 - <<'EOF'
 def edit(path, old, new):
     s = open(path).read()
@@ -3172,7 +3172,7 @@ Expected: tsc exits 0. Every test file passes. The coverage run reports 100% sta
 - [ ] **Step 3: Lint and format the new code with the repo-pinned Biome** (from the repo root)
 
 ```bash
-cd /home/chris/Github/hooks
+cd <repo-root>
 T="packages/daas-toolbox/src/deeplink packages/daas-toolbox/src/hooks/useDeeplinkHandler packages/daas-toolbox/src/__tests__"
 npx biome check --write $T
 npx biome check $T
@@ -3183,8 +3183,8 @@ Expected: the second command exits 0. `git status` shows changes only under `pac
 - [ ] **Step 4: Rerun the tests after formatting, then commit**
 
 ```bash
-cd /home/chris/Github/hooks/packages/daas-toolbox && npx vitest run
-cd /home/chris/Github/hooks
+cd <repo-root>/packages/daas-toolbox && npx vitest run
+cd <repo-root>
 git add packages/daas-toolbox
 git commit -m "docs(daas-toolbox): document deeplink handler chains, hook-first registration"
 ```

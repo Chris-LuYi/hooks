@@ -10,6 +10,7 @@ jobs:
       - uses: pnpm/action-setup@v4
       - run: pnpm run init
       - run: pnpm run tsc
+      - run: node packages/daas-toolbox/scripts/check-clean.mjs
   test:
     runs-on: ubuntu-latest
 

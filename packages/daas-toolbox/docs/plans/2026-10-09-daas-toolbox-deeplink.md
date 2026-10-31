@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- No new runtime dependencies. `react` stays the only runtime import, and nothing imports `@chrisluyi/daas-sdk`.
+- No new runtime dependencies. `react` stays the only runtime import, and nothing imports the DaaS SDK.
 - Global singleton key: `Symbol.for('daas-toolbox/deeplink')`; entry shape `{ version: 1, registry }`.
 - Default `invoke` timeout: `10000` ms, measured from `invoke()` until the call settles. `Infinity` disables it.
 - All log and error messages start with `[daas-toolbox]`.
@@ -61,7 +61,7 @@ packages/daas-toolbox/
     utils/                              unchanged location
 ```
 
-All commands below run from `/home/chris/Github/hooks/packages/daas-toolbox` unless stated otherwise.
+All commands below run from `<repo-root>/packages/daas-toolbox` unless stated otherwise.
 
 ---
 
@@ -71,7 +71,7 @@ All commands below run from `/home/chris/Github/hooks/packages/daas-toolbox` unl
 - Move: `packages/daas-hooks` → `packages/daas-toolbox`
 - Move: `src/{createUpdateEffect,useCreation,useHistoryTravel,useLatest,useMemoizedFn,useMount,useRequest,useUnmount,useUpdate,useUpdateEffect,useWhyDidYouUpdate}` → `src/hooks/`
 - Create: `src/hooks/index.ts`, `src/__tests__/index.spec.ts`
-- Modify: `src/index.ts`, `package.json`, `/home/chris/Github/hooks/pnpm-lock.yaml` (regenerated)
+- Modify: `src/index.ts`, `package.json`, `<repo-root>/pnpm-lock.yaml` (regenerated)
 
 **Interfaces:**
 - Produces: `src/hooks/index.ts` re-exports `useHistoryTravel`, `useMount`, `useRequest`, `useWhyDidYouUpdate`, `CancelledError`, `clearCache`, `isCancelledError`, and the types `Options`, `Plugin`, `Result`, `Service`. Root `src/index.ts` does `export * from './hooks'`.
@@ -79,7 +79,7 @@ All commands below run from `/home/chris/Github/hooks/packages/daas-toolbox` unl
 - [ ] **Step 1: Move the folders**
 
 ```bash
-cd /home/chris/Github/hooks
+cd <repo-root>
 git mv packages/daas-hooks packages/daas-toolbox
 cd packages/daas-toolbox/src
 mkdir hooks
@@ -89,7 +89,7 @@ git mv createUpdateEffect useCreation useHistoryTravel useLatest useMemoizedFn u
 - [ ] **Step 2: Fix imports of the top-level `src/utils`.** Every such import needs one more `../`. The patterns depend on file depth and are quote-anchored, so `useRequest`'s local `src/utils` (`'./utils/…'`, `'../utils/cache'`, etc.) is never touched.
 
 ```bash
-cd /home/chris/Github/hooks/packages/daas-toolbox/src
+cd <repo-root>/packages/daas-toolbox/src
 # depth 2: hooks/<hook>/index.ts
 find hooks -mindepth 2 -maxdepth 2 -name '*.ts' -exec sed -i "s#'\.\./utils#'../../utils#g" {} +
 # depth 3: hooks/<hook>/__tests__/*.spec.ts(x), hooks/useRequest/src/*.ts
@@ -101,7 +101,7 @@ find hooks -mindepth 4 -maxdepth 4 -name '*.ts' -exec sed -i "s#'\.\./\.\./\.\./
 Verify that no import still points at the old location:
 
 ```bash
-cd /home/chris/Github/hooks/packages/daas-toolbox && npx tsc --noEmit -p .
+cd <repo-root>/packages/daas-toolbox && npx tsc --noEmit -p .
 ```
 Expected: `src/index.ts` errors only (it still imports `./useMount` and the other old paths). No errors under `src/hooks/`.
 
@@ -164,7 +164,7 @@ export * from './hooks';
 Then regenerate the workspace lockfile entry:
 
 ```bash
-cd /home/chris/Github/hooks && pnpm install
+cd <repo-root> && pnpm install
 ```
 Expected: `pnpm-lock.yaml` importer key changes from `packages/daas-hooks` to `packages/daas-toolbox`.
 
@@ -176,7 +176,7 @@ Expected: tsc exits 0. All test files pass: the 20 existing files (84 tests) plu
 - [ ] **Step 9: Commit**
 
 ```bash
-cd /home/chris/Github/hooks
+cd <repo-root>
 git add -A packages/daas-toolbox packages/daas-hooks pnpm-lock.yaml
 git commit -m "refactor(daas-toolbox): rename daas-hooks to @daas/toolbox and move hooks into src/hooks"
 ```
@@ -1592,7 +1592,7 @@ Expected: tsc exits 0. Every test file passes. The coverage run reports 100% sta
 - [ ] **Step 6: Lint and format with the repo-pinned Biome** (from the repo root)
 
 ```bash
-cd /home/chris/Github/hooks
+cd <repo-root>
 npx biome check --fix packages/daas-toolbox/src/deeplink packages/daas-toolbox/src/hooks/useDeeplinkHandler packages/daas-toolbox/src/hooks/index.ts packages/daas-toolbox/src/index.ts packages/daas-toolbox/src/__tests__
 npx biome check packages/daas-toolbox/src/deeplink packages/daas-toolbox/src/hooks/useDeeplinkHandler packages/daas-toolbox/src/hooks/index.ts packages/daas-toolbox/src/index.ts packages/daas-toolbox/src/__tests__
 git status --short
@@ -1602,8 +1602,8 @@ Expected: the second command reports no errors. `git status` shows changes only 
 - [ ] **Step 7: Rerun tests after formatting, then commit**
 
 ```bash
-cd /home/chris/Github/hooks/packages/daas-toolbox && npx vitest run
-cd /home/chris/Github/hooks
+cd <repo-root>/packages/daas-toolbox && npx vitest run
+cd <repo-root>
 git add packages/daas-toolbox
 git commit -m "feat(daas-toolbox): export deeplink API from root and document it"
 ```
