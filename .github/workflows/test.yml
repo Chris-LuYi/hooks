@@ -1,10 +1,25 @@
 name: Test CI
 
-on: [push, pull_request]
+# push is limited to master: a PR branch push used to run once for `push` and
+# again for `pull_request`, doubling the Actions minutes for the same commit.
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+
+# A newer push to the same PR/branch supersedes the run still in progress.
+concurrency:
+  group: test-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -12,11 +27,18 @@ jobs:
       - run: pnpm run tsc
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
+    # normal mode on Node 20 and 22; strict mode only on Node 22. React strict
+    # mode does not depend on the Node major, so Node 20 + strict was a
+    # duplicate job.
     strategy:
       matrix:
-        mode: ['normal', 'strict']
+        mode: ['normal']
         node-version: [20, 22]
+        include:
+          - mode: 'strict'
+            node-version: 22
 
     steps:
       - uses: actions/checkout@v4
