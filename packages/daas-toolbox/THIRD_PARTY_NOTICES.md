@@ -4,7 +4,7 @@
 file with the code wherever it is copied, and ship it with any SDK build that includes that code.
 The MIT license requires the copyright and permission notices to accompany every copy.
 
-Code not listed here, including `src/deeplink/` and `src/hooks/useDeeplinkHandler/`, is original
+Code not listed here is original
 to this package and is not covered by these notices.
 
 ## ahooks

@@ -9,28 +9,17 @@ describe("@daas-sdk/toolbox barrel", () => {
     "useHistoryTravel",
     "useMount",
     "useWhyDidYouUpdate",
-    "useDeeplinkHandler",
     "usePrevious",
     "useCreation",
     "clearCache",
     "isCancelledError",
     "CancelledError",
-    "createDeeplinkRegistry",
-    "createAppDeeplinks",
-    "DeeplinkTimeoutError",
-    "isDeeplinkTimeoutError",
   ])("exports %s", (name) => {
     expect(typeof exported[name]).toBe("function");
   });
 
-  test("exports the shared deeplink registry", () => {
-    expect(exported.deeplink).toEqual({
-      registerHandler: expect.any(Function),
-      invoke: expect.any(Function),
-      has: expect.any(Function),
-      registerGlobalHandler: expect.any(Function),
-      inspect: expect.any(Function),
-      subscribe: expect.any(Function),
-    });
+  test("no longer exports the deeplink registry", () => {
+    expect(exported.deeplink).toBeUndefined();
+    expect(exported.useDeeplinkHandler).toBeUndefined();
   });
 });
