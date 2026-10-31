@@ -9,7 +9,7 @@ to this package and is not covered by these notices.
 
 ## ahooks
 
-- Source: https://github.com/alibaba/hooks, version 3.10.1
+- Source: https://github.com/alibaba/hooks, version 3.11.0
   (upstream commit `43003f3bd5e6921173cfa2a791ed9d34e5221935`)
 - License: MIT
 - Files:
