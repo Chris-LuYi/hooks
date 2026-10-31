@@ -1,10 +1,19 @@
 name: gitleaks
 
-on: [push, pull_request]
+# push only on master; PR branches are scanned once through pull_request.
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: gitleaks-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   gitleaks:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: wget
