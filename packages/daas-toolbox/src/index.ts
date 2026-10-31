@@ -3,5 +3,4 @@
  * and lodash (MIT, Copyright OpenJS Foundation and other contributors).
  * Full notices: THIRD_PARTY_NOTICES.md
  */
-export * from "./deeplink";
 export * from "./hooks";

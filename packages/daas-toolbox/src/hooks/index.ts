@@ -1,5 +1,4 @@
 export { default as useCreation } from "./useCreation";
-export { default as useDeeplinkHandler } from "./useDeeplinkHandler";
 export { default as useHistoryTravel } from "./useHistoryTravel";
 export { default as useMount } from "./useMount";
 export type { ShouldUpdateFunc } from "./usePrevious";

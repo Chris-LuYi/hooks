@@ -60,8 +60,7 @@
     },
     {
       "includes": [
-        "packages/daas-toolbox/src/hooks/**",
-        "!packages/daas-toolbox/src/hooks/useDeeplinkHandler/**"
+        "packages/daas-toolbox/src/hooks/**"
       ],
       "linter": {
         "rules": {
