@@ -5,7 +5,7 @@ No runtime dependencies besides `react` (≥16.8).
 
 ```
 src/
-  hooks/      vendored subset of ahooks 3.10.1 (MIT) + useDeeplinkHandler
+  hooks/      vendored subset of ahooks 3.11.0 (MIT) + useDeeplinkHandler
   deeplink/   cross-MFE deeplink handler registry
   utils/      shared helpers
 ```
