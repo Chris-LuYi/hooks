@@ -31,7 +31,9 @@ Differences from upstream ahooks: `lodash/debounce` and `lodash/throttle` are re
 The cross-MFE deeplink handler registry and `useDeeplinkHandler` now live in
 `@daas-sdk/deeplink` (the `daas-cli` repo, `packages/deeplink`; the React hook is under
 `@daas-sdk/deeplink/react`). The API and the runtime registry key are unchanged. Import them from
-there instead of from this toolbox.
+there instead of from this toolbox. The guide, the runnable example and the original design
+records moved with the package: see `packages/deeplink/docs/deeplink-guide.md`,
+`packages/deeplink/example/` and `packages/deeplink/docs/{specs,plans}/` in the daas-cli repo.
 
 ## Copying into an SDK
 
