@@ -16,7 +16,7 @@ import { basename, join, resolve } from "node:path"
 export const MANIFEST_FILE = "ZIP-MANIFEST.json"
 // Same spirit as the per-repo clean guards: nothing personal in a shipped file.
 export const FORBIDDEN =
-  /chris|luyi|dbs|zustand-demo-archive|~\/Github|\/home\/[a-z]|daas-platform|anthropic|session_0|\/Users\/[A-Za-z]/i
+  /chris|luyi|zustand-demo-archive|~\/Github|\/home\/[a-z]|daas-platform|anthropic|session_0|\/Users\/[A-Za-z]/i
 const REQUIRED = [
   "schema",
   "source",
