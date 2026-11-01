@@ -19,3 +19,4 @@ yarn-error.log
 package-lock.json
 metadata.json
 .eslintcache
+ZIP-MANIFEST.json

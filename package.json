@@ -20,6 +20,8 @@
     "test:strict": "cross-env REACT_MODE=strict pnpm --filter=./packages/* test:cov",
     "coveralls": "vitest run --coverage | coveralls",
     "lint": "biome lint --fix",
+    "zip:manifest": "node scripts/zip-manifest.mjs write --run-guards",
+    "zip:check": "node scripts/zip-manifest.mjs check",
     "pretty": "biome format --fix --no-errors-on-unmatched",
     "build:doc": "cross-env NODE_OPTIONS=--openssl-legacy-provider dumi build",
     "build:doc-github": "node scripts/build-with-relative-paths.js",
