@@ -114,6 +114,6 @@
 1. **先了解背景。** 审查前先阅读 daas-cli 仓库 main 分支上的 `docs/agents/central-kb.md` 和 `docs/agents/feature-tree-map.md`,它们说明各 DaaS 仓库的关系和功能位置。
 2. **设计契合度。** 对照 daas-cli 仓库 main 分支的 `docs/kb/daas/` 检查改动是否符合 DaaS 的设计与既有决定,有冲突请指出。
 3. **功能树。** 新增或修改功能的 PR 必须同步更新 daas-cli 仓库的 `docs/agents/feature-tree-map.md`(相关时也包括 `central-kb.md`)。缺少对应的 daas-cli PR 请指出。
-4. **随包交付的内容必须干净。** `packages/daas-toolbox` 会被打包带走,其中不得出现任何个人信息(姓名、个人 GitHub 账号、本机路径、公司名),也不得链接到 `docs/agents/daas-platform.md`。本仓库是公开的,其余文件同样不要写入这类信息。
+4. **随包交付的内容必须干净。** `packages/hooks` 和 `packages/use-url-state` 会被整体复制进 DaaS SDK,其中不得出现任何个人信息(姓名、个人 GitHub 账号、本机路径、公司名),也不得链接到 `docs/agents/daas-platform.md`。本仓库是公开的,其余文件同样不要写入这类信息。`@daas-sdk/toolbox` 已移到 daas-cli 仓库的 `packages/toolbox`(2026-11-16);同步 upstream 后,在 daas-cli 运行 `bun run toolbox:upstream` 检查其 vendored ahooks 版本是否跟上。
 5. **保密内容。** 不要把 daas-cli 仓库的 `docs/agents/daas-platform.md` 的内容复制到任何仓库或 PR,也不要复制任何公司代码。
-6. **CI 计费失败。** 如果 GitHub Actions 因计费/分钟数耗尽而失败(任务几秒结束、没有 runner),忽略 CI,改为运行并汇报本地检查:lint、类型检查、测试,以及 `packages/daas-toolbox` 下的 `npm run check:clean`。
+6. **CI 计费失败。** 如果 GitHub Actions 因计费/分钟数耗尽而失败(任务几秒结束、没有 runner),忽略 CI,改为运行并汇报本地检查:lint、类型检查、测试。

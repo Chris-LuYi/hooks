@@ -171,16 +171,21 @@ function main() {
   const cmd = args._?.[0]
   const repo = resolve(args.repo ?? ".")
   if (cmd === "write") {
+    const cliDir = args.cli ? resolve(args.cli) : resolve(repo, "../daas-cli")
     const manifest = buildManifest({
       repo,
       matrixDirs: {
-        cli: args.cli ? resolve(args.cli) : resolve(repo, "../daas-cli"),
+        cli: cliDir,
         engine: args.engine
           ? resolve(args.engine)
           : resolve(repo, "../zustand-engine"),
+        // daas-cli/packages/toolbox since the move; the old hooks home as a fallback.
         toolbox: args.toolbox
           ? resolve(args.toolbox)
-          : resolve(repo, "../hooks/packages/daas-toolbox"),
+          : [
+              join(cliDir, "packages/toolbox"),
+              resolve(repo, "../hooks/packages/daas-toolbox"),
+            ].find((d) => existsSync(d)),
       },
       guards: args.runGuards ? runGuards(repo) : [],
       included: args.include,
